@@ -4,8 +4,8 @@
 
 struct Transforms {
     constexpr static glm::vec3 FORWARD = glm::vec3 (1.0f, 0.0f, 0.0f);
-    constexpr static glm::vec3 RIGHT = glm::vec3 (0.0f, 1.0f, 0.0f);
-    constexpr static glm::vec3 UP = glm::vec3 (0.0f, 0.0f, 1.0f);
+    constexpr static glm::vec3 RIGHT = glm::vec3 (0.0f, 0.0f, 1.0f);
+    constexpr static glm::vec3 UP = glm::vec3 (0.0f, 1.0f, 0.0f);
 
     //makes it easy to give human-readable angles to each axis of rotation
     static glm::mat4 RotateDegrees(const glm::mat4& _matrix, const glm::vec3& _rotationAngles) {

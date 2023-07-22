@@ -47,7 +47,7 @@ public:
 
     const float FOV = 75.0f;
     const float NEAR_PLANE = 0.1f;
-    const float FAR_PLANE = 100.0f;
+    const float FAR_PLANE = 400.0f;
 
 public:
     Camera();
@@ -60,6 +60,8 @@ public:
 
     void SetViewportSize(float _width, float _height);
     void SetDefaultPositionAndTarget();
+    void SetPosition(const glm::vec3& _position);
+    void SetTarget(const glm::vec3& _target);
 
     [[nodiscard]] glm::vec3 GetPosition() const;
     [[nodiscard]] glm::mat4 GetViewProjection() const;

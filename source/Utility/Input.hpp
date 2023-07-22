@@ -46,6 +46,33 @@ struct Input {
         cursor_y = now_cursor_y;
     }
 
+    static bool IsAnyKeyPressed(GLFWwindow* _window) {
+        bool any_key_pressed = false;
+
+        for (auto& key_state : current_key_state) {
+            if (key_state.second != KeyState::None) {
+                any_key_pressed = true;
+                break;
+            }
+        }
+
+        return any_key_pressed;
+    }
+
+    static bool IsAnyKeyPressed(GLFWwindow* _window,  const int _desiredKeysCount, const int* _desiredKeys) {
+        bool any_key_pressed = false;
+
+        for (int i = 0; i < _desiredKeysCount; ++i) {
+            if (IsKeyPressed(_window, _desiredKeys[i]))
+            {
+                any_key_pressed = true;
+                break;
+            }
+        }
+
+        return any_key_pressed;
+    }
+
     static bool IsKeyPressed(GLFWwindow* _window, const int _desiredKey) {
         return current_key_state.contains(_desiredKey) && current_key_state[_desiredKey] == KeyState::Pressed || current_key_state[_desiredKey] == KeyState::Holding;
     }

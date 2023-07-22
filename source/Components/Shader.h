@@ -75,3 +75,4 @@ public:
     void SetModelMatrix(const glm::mat4& _transform) const; // utility function to set model matrix
     void SetViewProjectionMatrix(const glm::mat4& _transform) const; // utility function to set projection matrix
 };
+
