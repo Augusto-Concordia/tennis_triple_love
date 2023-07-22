@@ -1,5 +1,5 @@
-# tennis_love
-Assignment #1 - COMP 371
+# tennis_double_love
+Assignment #2 - COMP 371
 
 My first real OpenGL project: the first in many to come :) I'll include some progress updates along the way, as well as instructions to how to build and run it.
 
