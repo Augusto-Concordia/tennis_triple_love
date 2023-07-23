@@ -3,8 +3,7 @@
 #include "Utility/Transform.hpp"
 
 Renderer::Renderer(int _initialWidth, int _initialHeight) {
-    main_camera = std::make_unique<Camera>(glm::vec3(0.0f, 25.0f, 30.0f), glm::vec3(0.0f), _initialWidth,
-                                           _initialHeight);
+    main_camera = std::make_unique<Camera>(glm::vec3(0.0f, 25.0f, 30.0f), glm::vec3(0.0f), _initialWidth, _initialHeight);
 
     default_shader = Shader::Library::CreateShader("shaders/default.vert", "shaders/default.frag");
 
@@ -20,14 +19,26 @@ Renderer::Renderer(int _initialWidth, int _initialHeight) {
     const char *unlit_fragment_shader_path = "shaders/unlit/unlit.frag";
 
     //axis lines
-    Shader::Descriptor x_line_s_descriptor = {.vertex_shader_path = unlit_vertex_shader_path, .fragment_shader_path = unlit_fragment_shader_path, .line_thickness = 3.0f, .color = glm::vec3(
-            1.0f, 0.0f, 0.0f)};
+    Shader::Descriptor x_line_s_descriptor = {
+            .vertex_shader_path = unlit_vertex_shader_path,
+            .fragment_shader_path = unlit_fragment_shader_path,
+            .line_thickness = 3.0f,
+            .color = glm::vec3(1.0f, 0.0f, 0.0f),
+            };
 
-    Shader::Descriptor y_line_s_descriptor = {.vertex_shader_path = unlit_vertex_shader_path, .fragment_shader_path = unlit_fragment_shader_path, .line_thickness = 3.0f, .color = glm::vec3(
-            0.0f, 1.0f, 0.0f)};
+    Shader::Descriptor y_line_s_descriptor = {
+            .vertex_shader_path = unlit_vertex_shader_path,
+            .fragment_shader_path = unlit_fragment_shader_path,
+            .line_thickness = 3.0f,
+            .color = glm::vec3(0.0f, 1.0f, 0.0f),
+            };
 
-    Shader::Descriptor z_line_s_descriptor = {.vertex_shader_path = unlit_vertex_shader_path, .fragment_shader_path = unlit_fragment_shader_path, .line_thickness = 3.0f, .color = glm::vec3(
-            0.0f, 0.0f, 1.0f)};
+    Shader::Descriptor z_line_s_descriptor = {
+            .vertex_shader_path = unlit_vertex_shader_path,
+            .fragment_shader_path = unlit_fragment_shader_path,
+            .line_thickness = 3.0f,
+            .color = glm::vec3(0.0f, 0.0f, 1.0f),
+            };
 
     //this is a quick way to make the axis lines avoid having depth fighting issues
     main_x_line = std::make_unique<VisualLine>(glm::vec3(0.01f), glm::vec3(5.01f, 0.01f, 0.01f), x_line_s_descriptor);
@@ -54,8 +65,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight) {
             .fragment_shader_path = unlit_fragment_shader_path,
             .color = glm::vec3(0.53f, 0.81f, 0.92f)
     };
-    world_cube = std::make_unique<VisualCube>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(200.0f), glm::vec3(0.0f),
-                                              world_s_descriptor);
+    world_cube = std::make_unique<VisualCube>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(200.0f), glm::vec3(0.0f), world_s_descriptor);
 
     //cube transform point offset (i.e. to scale it from the bottom-up)
     auto bottom_y_transform_offset = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -132,7 +142,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight) {
             .shininess = 128,
     };
     letter_cubes[3] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, h_s_descriptor); //letter h
-    
+
     //cube transform point offset (i.e. to scale it from the bottom-up)
     auto bottom_z_transform_offset = glm::vec3(0.0f, 0.0f, 0.5f);
 
@@ -146,29 +156,29 @@ Renderer::Renderer(int _initialWidth, int _initialHeight) {
     rackets = std::vector<Racket>(5);
     default_rackets = std::vector<Racket>(4);
 
-    rackets[0] = default_rackets[0] = {
-            .position = glm::vec3(-10.0f, 0.0f, -10.0f),
-            .rotation = glm::vec3(0.0f),
-            .scale = glm::vec3(0.8f),
-            };
+    rackets[0] = default_rackets[0] = Racket(
+            glm::vec3(-10.0f, 0.0f, -10.0f),
+            glm::vec3(0.0f),
+            glm::vec3(0.8f)
+    );
 
-    rackets[1] = default_rackets[1] = {
-            .position = glm::vec3(-10.0f, 0.0f, 10.0f),
-            .rotation = glm::vec3(0.0f),
-            .scale = glm::vec3(0.8f),
-    };
+    rackets[1] = default_rackets[1] = Racket(
+            glm::vec3(-10.0f, 0.0f, 10.0f),
+            glm::vec3(0.0f),
+            glm::vec3(0.8f)
+    );
 
-    rackets[2] = default_rackets[2] = {
-            .position = glm::vec3(10.0f, 0.0f, -10.0f),
-            .rotation = glm::vec3(0.0f, 180.0f, 0.0f),
-            .scale = glm::vec3(0.8f),
-    };
+    rackets[2] = default_rackets[2] = Racket(
+            glm::vec3(10.0f, 0.0f, -10.0f),
+            glm::vec3(0.0f, 180.0f, 0.0f),
+            glm::vec3(0.8f)
+    );
 
-    rackets[3] = default_rackets[3] = {
-            .position = glm::vec3(10.0f, 0.0f, 10.0f),
-            .rotation = glm::vec3(0.0f, 180.0f, 0.0f),
-            .scale = glm::vec3(0.8f),
-    };
+    rackets[3] = default_rackets[3] = Racket(
+            glm::vec3(10.0f, 0.0f, 10.0f),
+            glm::vec3(0.0f, 180.0f, 0.0f),
+            glm::vec3(0.8f)
+    );
 
     Shader::Descriptor skin_s_descriptor = {
             .vertex_shader_path = lit_vertex_shader_path,

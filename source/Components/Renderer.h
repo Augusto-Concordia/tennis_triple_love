@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <utility>
 #include "Camera.h"
 #include "Shader.h"
 #include "Visual/VisualGrid.h"
@@ -14,6 +15,9 @@ private:
         glm::vec3 position;
         glm::vec3 rotation;
         glm::vec3 scale;
+
+        Racket() = default;
+        Racket(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale) : position(_position), rotation(_rotation), scale(_scale) {}
     };
 
     struct Light {
@@ -21,6 +25,9 @@ private:
 
         glm::vec3 position;
         glm::vec3 color;
+
+        Light() = default;
+        Light(VisualCube  _cube, glm::vec3 _position, glm::vec3 _color) : cube(std::move(_cube)), position(_position), color(_color) {}
     };
 
     std::shared_ptr<Camera> main_camera;
