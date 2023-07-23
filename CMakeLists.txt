@@ -18,4 +18,9 @@ file(GLOB_RECURSE TENNIS_DOUBLE_LOVE_FILES source/**.cpp)
 add_executable(tennis_double_love ${TENNIS_DOUBLE_LOVE_FILES})
 
 target_include_directories(tennis_double_love PRIVATE source)
-target_link_libraries(tennis_double_love PRIVATE glfw OpenGL::GL glm glad -static-libgcc -static-libstdc++)
+
+IF (WIN32)
+    target_link_libraries(tennis_double_love PRIVATE glfw OpenGL::GL glm glad -static-libgcc -static-libstdc++)
+ELSE()
+    target_link_libraries(tennis_double_love PRIVATE glfw OpenGL::GL glm glad)
+ENDIF()
