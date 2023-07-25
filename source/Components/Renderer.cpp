@@ -270,7 +270,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime) {
     DrawOneNet(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f));
 
     //draws the rackets
-    DrawOneRacket(rackets[0].position, rackets[1].rotation, rackets[2].scale);
+    DrawOneAugustoRacket(rackets[0].position, rackets[1].rotation, rackets[2].scale);
 }
 
 void Renderer::DrawOneNet(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale) {
@@ -324,7 +324,7 @@ void Renderer::DrawOneNet(const glm::vec3 &position, const glm::vec3 &rotation, 
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 }
 
-void Renderer::DrawOneRacket(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale) {
+void Renderer::DrawOneAugustoRacket(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale) {
     glm::mat4 world_transform_matrix = glm::mat4(1.0f);
     //global transforms
     world_transform_matrix = glm::translate(world_transform_matrix, position);
