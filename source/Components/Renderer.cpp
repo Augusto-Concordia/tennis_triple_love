@@ -270,10 +270,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime) {
     DrawOneNet(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f));
 
     //draws the rackets
-    for (int i = 0; i < rackets.size(); ++i) {
-        const auto& racket = rackets[i];
-        DrawOneRacket(racket.position, racket.rotation, racket.scale, i);
-    }
+    DrawOneRacket(rackets[0].position, rackets[1].rotation, rackets[2].scale);
 }
 
 void Renderer::DrawOneNet(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale) {
@@ -327,7 +324,7 @@ void Renderer::DrawOneNet(const glm::vec3 &position, const glm::vec3 &rotation, 
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 }
 
-void Renderer::DrawOneRacket(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale, int player) {
+void Renderer::DrawOneRacket(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale) {
     glm::mat4 world_transform_matrix = glm::mat4(1.0f);
     //global transforms
     world_transform_matrix = glm::translate(world_transform_matrix, position);
@@ -335,48 +332,6 @@ void Renderer::DrawOneRacket(const glm::vec3 &position, const glm::vec3 &rotatio
     world_transform_matrix = glm::scale(world_transform_matrix, scale);
 
     glm::mat4 secondary_transform_matrix = world_transform_matrix;
-
-    //player's letter
-    switch (player) {
-        case 0:
-            DrawOneP(secondary_transform_matrix);
-            secondary_transform_matrix = glm::scale(secondary_transform_matrix, glm::vec3(0.9f));
-            secondary_transform_matrix = glm::translate(secondary_transform_matrix, glm::vec3(0.0f, 2.5f, -2.0f));
-            DrawOneP(secondary_transform_matrix);
-            secondary_transform_matrix = glm::scale(secondary_transform_matrix, glm::vec3(0.9f));
-            secondary_transform_matrix = glm::translate(secondary_transform_matrix, glm::vec3(0.0f, 2.5f, -2.0f));
-            DrawOneP(secondary_transform_matrix);
-            break;
-        case 1:
-            secondary_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 180.0f, 0.0f));
-            DrawOneN(secondary_transform_matrix);
-            secondary_transform_matrix = glm::scale(secondary_transform_matrix, glm::vec3(0.9f));
-            secondary_transform_matrix = glm::translate(secondary_transform_matrix, glm::vec3(0.0f, 2.5f, 2.0f));
-            DrawOneN(secondary_transform_matrix);
-            secondary_transform_matrix = glm::scale(secondary_transform_matrix, glm::vec3(0.9f));
-            secondary_transform_matrix = glm::translate(secondary_transform_matrix, glm::vec3(0.0f, 2.5f, 2.0f));
-            DrawOneN(secondary_transform_matrix);
-            break;
-        case 2:
-            DrawOneI(secondary_transform_matrix);
-            secondary_transform_matrix = glm::scale(secondary_transform_matrix, glm::vec3(0.9f));
-            secondary_transform_matrix = glm::translate(secondary_transform_matrix, glm::vec3(0.0f, 2.5f, -2.0f));
-            DrawOneI(secondary_transform_matrix);
-            secondary_transform_matrix = glm::scale(secondary_transform_matrix, glm::vec3(0.9f));
-            secondary_transform_matrix = glm::translate(secondary_transform_matrix, glm::vec3(0.0f, 2.5f, -2.0f));
-            DrawOneI(secondary_transform_matrix);
-            break;
-        case 3:
-            secondary_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 180.0f, 0.0f));
-            DrawOneH(secondary_transform_matrix);
-            secondary_transform_matrix = glm::scale(secondary_transform_matrix, glm::vec3(0.9f));
-            secondary_transform_matrix = glm::translate(secondary_transform_matrix, glm::vec3(0.0f, 2.5f, 2.0f));
-            DrawOneH(secondary_transform_matrix);
-            secondary_transform_matrix = glm::scale(secondary_transform_matrix, glm::vec3(0.9f));
-            secondary_transform_matrix = glm::translate(secondary_transform_matrix, glm::vec3(0.0f, 2.5f, 2.0f));
-            DrawOneH(secondary_transform_matrix);
-            break;
-    }
 
     //forearm (skin)
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(135.0f, 0.0f, 0.0f));

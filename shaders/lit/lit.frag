@@ -21,24 +21,27 @@ out vec4 fragColor; //rgba color output
 
 //entrypoint
 void main() {
+    float light_strength = 20;
+
     //ambient lighting calculation
     vec3 ambient = u_ambient_strength * u_light_color;
 
     //diffuse lighting calculation
     vec3 norm = normalize(Normal);
     vec3 lightDir = normalize(u_light_pos - FragPos);
+    float lightDistance = length(u_light_pos - FragPos);
 
-    float diffFactor = max(dot(norm, lightDir), 0.0);
+    float diffFactor = dot(lightDir, norm);
     vec3 diffuse = diffFactor * u_light_color;
 
     //specular lighting calculation
     vec3 viewDir = normalize(u_cam_pos - FragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
+    vec3 reflectDir = normalize(reflect(-lightDir, norm));
 
     float specularFactor = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess);
     vec3 specular = specularFactor * u_specular_strength * u_light_color;
 
-    vec3 colorResult = (ambient + diffuse + specular) * u_color;
+    vec3 colorResult = u_color * (ambient + (diffuse + specular) * light_strength * 0.883 / (0.18 + 0.0 * lightDistance + 0.51 * lightDistance * lightDistance));
 
     fragColor = vec4(colorResult, u_alpha);
 }

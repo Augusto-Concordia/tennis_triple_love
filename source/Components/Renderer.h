@@ -59,7 +59,7 @@ public:
     void Render(GLFWwindow* _window, double _deltaTime);
 
     void DrawOneNet(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
-    void DrawOneRacket(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, int player);
+    void DrawOneRacket(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
     void DrawOneP(glm::mat4 world_transform_matrix);
 
     void ResizeCallback(GLFWwindow* _window, int _displayWidth, int _displayHeight);
