@@ -9,9 +9,11 @@
 #include "Components/Visual/VisualLine.h"
 #include "Components/Visual/VisualCube.h"
 
-class Renderer {
+class Renderer
+{
 private:
-    struct Racket {
+    struct Racket
+    {
         glm::vec3 position;
         glm::vec3 rotation;
         glm::vec3 scale;
@@ -20,14 +22,15 @@ private:
         Racket(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale) : position(_position), rotation(_rotation), scale(_scale) {}
     };
 
-    struct Light {
+    struct Light
+    {
         VisualCube cube;
 
         glm::vec3 position;
         glm::vec3 color;
 
         Light() = default;
-        Light(VisualCube  _cube, glm::vec3 _position, glm::vec3 _color) : cube(std::move(_cube)), position(_position), color(_color) {}
+        Light(VisualCube _cube, glm::vec3 _position, glm::vec3 _color) : cube(std::move(_cube)), position(_position), color(_color) {}
     };
 
     std::shared_ptr<Camera> main_camera;
@@ -46,7 +49,12 @@ private:
 
     std::vector<VisualCube> letter_cubes;
 
-    std::vector<VisualCube> racket_cubes;
+    std::shared_ptr<VisualCube> augusto_racket_cube;
+    std::vector<Shader::Descriptor> augusto_racket_materials;
+
+    VisualCube gabrielle_racket_cube;
+    VisualCube jack_racket_cube;
+
     std::vector<Racket> rackets;
     std::vector<Racket> default_rackets;
 
@@ -56,14 +64,16 @@ private:
 public:
     Renderer(int _initialWidth, int _initialHeight);
 
-    void Render(GLFWwindow* _window, double _deltaTime);
+    void Render(GLFWwindow *_window, double _deltaTime);
 
-    void DrawOneNet(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
-    void DrawOneAugustoRacket(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale);
+    void DrawOneNet(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale);
+    void DrawOneAugustoRacket(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale);
+    void DrawOneJackRacket(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale);
+    void DrawOneGabrielleRacket(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale);
     void DrawOneP(glm::mat4 world_transform_matrix);
 
-    void ResizeCallback(GLFWwindow* _window, int _displayWidth, int _displayHeight);
-    void InputCallback(GLFWwindow* _window, double _deltaTime);
+    void ResizeCallback(GLFWwindow *_window, int _displayWidth, int _displayHeight);
+    void InputCallback(GLFWwindow *_window, double _deltaTime);
 
     void DrawOneI(glm::mat4 world_transform_matrix);
 
@@ -71,4 +81,3 @@ public:
 
     void DrawOneH(glm::mat4 world_transform_matrix);
 };
-

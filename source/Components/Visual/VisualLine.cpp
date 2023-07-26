@@ -1,34 +1,35 @@
 #include "VisualLine.h"
 
-VisualLine::VisualLine(glm::vec3 _start, glm::vec3 _end, Shader::Descriptor _descriptor) : VisualObject(_start, glm::vec3(0.0f), glm::vec3(1.0f), _descriptor) {
+VisualLine::VisualLine(glm::vec3 _start, glm::vec3 _end, Shader::Descriptor _descriptor) : VisualObject(_start, glm::vec3(0.0f), glm::vec3(1.0f), _descriptor)
+{
     position = _start;
     end = _end;
 
     vertices = {
-            position.x,
-            position.y,
-            position.z,
-            end.x,
-            end.y,
-            end.z
-    };
+        position.x,
+        position.y,
+        position.z,
+        end.x,
+        end.y,
+        end.z};
 
     indices = {
-            0, 1
-    };
+        0, 1};
 
     VisualObject::SetupGlBuffersVerticesOnly();
 }
 
-void VisualLine::Draw(const glm::mat4& _viewProjection,  const glm::vec3 &_cameraPosition, int _renderMode) {
+void VisualLine::Draw(const glm::mat4 &_viewProjection, const glm::vec3 &_cameraPosition, int _renderMode, const Shader::Descriptor *material)
+{
     glm::mat4 model_matrix = glm::mat4(1.0f);
 
-    DrawFromMatrix(_viewProjection, _cameraPosition, model_matrix, _renderMode);
+    DrawFromMatrix(_viewProjection, _cameraPosition, model_matrix, _renderMode, material);
 }
 
 void VisualLine::DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec3 &_cameraPosition,
-                                const glm::mat4 &_transformMatrix, int _renderMode) {
-    //bind the vertex array to draw
+                                const glm::mat4 &_transformMatrix, int _renderMode, const Shader::Descriptor *material)
+{
+    // bind the vertex array to draw
     glBindVertexArray(vertex_array_o);
 
     shader->Use();
@@ -41,6 +42,6 @@ void VisualLine::DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec
     glLineWidth(shader_descriptor.line_thickness);
     glPointSize(shader_descriptor.point_size);
 
-    //draw vertices according to their indices
+    // draw vertices according to their indices
     glDrawElements(_renderMode, indices.size(), GL_UNSIGNED_INT, nullptr);
 }
