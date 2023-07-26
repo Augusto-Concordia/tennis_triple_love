@@ -99,7 +99,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .light_color = main_light->color,
         .shininess = 128,
     };
-    net_cubes[1] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset); // net
+    net_cubes[1] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, net_s_descriptor); // net
 
     // letters
     letter_cubes = std::vector<VisualCube>(4);
@@ -148,14 +148,11 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     };
     letter_cubes[3] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, h_s_descriptor); // letter h
 
-    // cube transform point offset (i.e. to scale it from the bottom-up)
-    auto bottom_z_transform_offset = glm::vec3(0.0f, 0.0f, 0.5f);
-
     const auto racket_line_thickness = 2.0f;
     const auto racket_point_size = 3.0f;
 
     // augusto racket cube + materials
-    augusto_racket_cube = std::make_shared<VisualCube>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_z_transform_offset, default_s_descriptor);
+    augusto_racket_cube = std::make_shared<VisualCube>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_descriptor);
     augusto_racket_materials = std::vector<Shader::Descriptor>();
 
     rackets = std::vector<Racket>(3);
@@ -226,15 +223,16 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     ////
 
     // gabrielle racket cube
-    gabrielle_racket_cube = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_z_transform_offset, default_s_descriptor);
+    gabrielle_racket_cube = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_descriptor);
     rackets[1] = default_rackets[1] = Racket(
         glm::vec3(10.0f, 0.0f, 0.0f),
         glm::vec3(0.0f),
         glm::vec3(0.8f));
+
     ////
 
     // jack racket cube
-    jack_racket_cube = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_z_transform_offset, default_s_descriptor);
+    jack_racket_cube = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_descriptor);
     rackets[2] = default_rackets[0] = Racket(
         glm::vec3(-10.0f, 0.0f, 0.0f),
         glm::vec3(0.0f),
@@ -341,82 +339,72 @@ void Renderer::DrawOneAugustoRacket(const glm::vec3 &position, const glm::vec3 &
     // forearm (skin)
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(45.0f, 0.0f, 0.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 5.0f, 1.0f));
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[0]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[0]);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 0.2f, 1.0f));
 
     // arm (skin)
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 5.0f, 0.0f));
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(-22.5f * sin(glfwGetTime()) - 22.5f, 0.0f, 0.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 4.0f, 1.0f));
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[0]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[0]);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 0.25f, 1.0f));
 
     // racket handle (black plastic)
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 4.0f, 0.0f));
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 0.0f, 0.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 4.0f, 0.5f));
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[1]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[1]);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, 0.25f, 2.0f));
 
     // racket angled bottom left (blue plastic)
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 4.0f, 0.0f));
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(-60.0f, 0.0f, 0.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 2.0f, 0.5f));
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[2]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[2]);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, 0.5f, 2.0f));
 
     // racket vertical left (green plastic)
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 2.0f, 0.0f));
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(60.0f, 0.0f, 0.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 3.0f, 0.5f));
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[3]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[3]);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, 1.0f / 3.0f, 2.0f));
 
     // racket angled top left (blue plastic)
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 3.0f, 0.0f));
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(60.0f, 0.0f, 0.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 1.0f, 0.5f));
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[2]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[2]);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, 1.0f, 2.0f));
 
     // racket horizontal top (green plastic)
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 1.0f, 0.0));
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(30.0f, 0.0f, 0.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 1.6f, 0.5f));
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[3]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[3]);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, 1.0f / 1.6f, 2.0f));
 
     // racket angled top right (blue plastic)
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 1.6f, 0.0f));
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(30.0f, 0.0f, 0.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 1.0f, 0.5f));
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[2]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[2]);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, 1.0f, 2.0f));
 
     // racket vertical right (green plastic)
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 1.0f, 0.0f));
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(60.0f, 0.0f, 0.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 3.0f, 0.5f));
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[3]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[3]);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, 1.0f / 3.0f, 2.0f));
 
     // racket horizontal bottom (blue plastic)
-    auto horizontal_bottom_scale = glm::vec3(0.4f, 0.4f, 3.2f);
+    auto horizontal_bottom_scale = glm::vec3(0.4f, 3.2f, 0.4f);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 3.0f, 0.0f));
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(90.0f, 0.0f, 0.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, horizontal_bottom_scale);
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[2]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[2]);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / horizontal_bottom_scale);
 
     // racket net vertical (white plastic)
@@ -428,13 +416,14 @@ void Renderer::DrawOneAugustoRacket(const glm::vec3 &position, const glm::vec3 &
     auto net_v_scale = glm::vec3(0.1f, 3.55f, 0.1f);
     auto full_v_translate = net_first_v_translate + net_v_translate * (float)number_of_same_nets_v;
 
+    // correct orientation for the vertical nets
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(90.0f, -90.0f, 0.0f));
+
     // part 1
     // done separately because it has a different offset (for aesthetic purposes)
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(90.0f, 0.0f, 0.0f));
     world_transform_matrix = glm::translate(world_transform_matrix, net_first_v_translate);
     world_transform_matrix = glm::scale(world_transform_matrix, net_v_scale);
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[2]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[2]);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / net_v_scale);
 
     // the rest of the net parts
@@ -442,8 +431,7 @@ void Renderer::DrawOneAugustoRacket(const glm::vec3 &position, const glm::vec3 &
     {
         world_transform_matrix = glm::translate(world_transform_matrix, net_v_translate);
         world_transform_matrix = glm::scale(world_transform_matrix, net_v_scale);
-        augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(),
-                                       world_transform_matrix, racket_render_mode);
+        augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode);
         world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / net_v_scale);
     }
 
@@ -454,19 +442,17 @@ void Renderer::DrawOneAugustoRacket(const glm::vec3 &position, const glm::vec3 &
     auto net_h_scale = glm::vec3(0.1f, 3.05f, 0.1f);
     auto full_h_translate = net_first_h_translate + net_h_translate * (float)number_of_same_nets_h;
 
-    // correctly place the horizontal nets
+    // correctly place and rotate the horizontal nets
     // the reason why it's a weird combination of y and z, is because we're always in relative space,
     // so depending on the current piece we're drawing, the orientation won't be the same
-    world_transform_matrix = glm::translate(world_transform_matrix,
-                                            glm::vec3(0.0f, -horizontal_bottom_scale.z - full_v_translate.y, 0.0f));
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(-horizontal_bottom_scale.z - full_v_translate.y, 0.0f, 0.0f));
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 0.0f, 90.0f));
 
     // part 1
     // done separately because it has a different offset (for aesthetic purposes)
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(90.0f, 0.0f, 0.0f));
     world_transform_matrix = glm::translate(world_transform_matrix, net_first_h_translate);
     world_transform_matrix = glm::scale(world_transform_matrix, net_h_scale);
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[4]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[4]);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / net_h_scale);
 
     // the rest of the net parts
@@ -474,33 +460,27 @@ void Renderer::DrawOneAugustoRacket(const glm::vec3 &position, const glm::vec3 &
     {
         world_transform_matrix = glm::translate(world_transform_matrix, net_h_translate);
         world_transform_matrix = glm::scale(world_transform_matrix, net_h_scale);
-        augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(),
-                                       world_transform_matrix, racket_render_mode, &augusto_racket_materials[4]);
+        augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[4]);
         world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / net_h_scale);
     }
 
     // racket angled bottom right (blue plastic)
     // first we undo any transformations done for the net parts
-    world_transform_matrix = glm::translate(world_transform_matrix,
-                                            glm::vec3(0.0f, -full_v_translate.y, horizontal_bottom_scale.z));
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(150.0f, 0.0f, 0.0f));
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(-full_v_translate.x, horizontal_bottom_scale.y, 0.0f));
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 0.0f, 150.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 2.0f, 0.5f));
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[2]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[2]);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, 0.5f, 2.0f));
 
     // ball
-    // transformed to be more or less in the corner of the net
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, -horizontal_bottom_scale.z / 6.0f,
-                                                                              horizontal_bottom_scale.z / 4.0f));
-    world_transform_matrix = glm::translate(world_transform_matrix,
-                                            glm::vec3(-25.0f * glm::pow(glm::cos(glfwGetTime()), 2) + 26.5f, 3.0f,
-                                                      -1.5f));
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix,
-                                                       glm::vec3((float)glm::cos(glfwGetTime()) * 360.0f));
+    // transformed to be more or less in the center of the net
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(-full_v_translate.x / 2.0f, horizontal_bottom_scale.y / 2.0f, 0.0f));
+    // transformed to animate back and forth
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, -1.5f, -25.0f * glm::pow(glm::cos(glfwGetTime()), 2) + 25.5f));
+
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3((float)glm::cos(glfwGetTime()) * 360.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f));
-    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode, &augusto_racket_materials[3]);
+    augusto_racket_cube->DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, racket_render_mode, &augusto_racket_materials[3]);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / glm::vec3(1.0f));
 }
 
