@@ -1,9 +1,5 @@
-# tennis_double_love
+# tennis_triple_love
 Assignment #2 - COMP 371
-
-My first real OpenGL project: the first in many to come :) I'll include some progress updates along the way, as well as instructions to how to build and run it.
-
-**Note: the +Z-axis is the up direction (blue line), the +Y-axis is the right-ish direction (green line) & the +X-axis is the left-ish direction (red line)**
 
 ## Features
 * Many keybinds to control the camera and the model
