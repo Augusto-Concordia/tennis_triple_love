@@ -13,37 +13,6 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     auto grid_shader = Shader::Library::CreateShader("shaders/grid/grid.vert", "shaders/grid/grid.frag");
     auto unlit_shader = Shader::Library::CreateShader("shaders/unlit/unlit.vert", "shaders/unlit/unlit.frag");
     auto lit_shader = Shader::Library::CreateShader("shaders/lit/lit.vert", "shaders/lit/lit.frag");
-    auto shadow_mapper_shader = Shader::Library::CreateShader("shaders/shadows/shadow_mapper.vert", "shaders/shadows/shadow_mapper.frag");
-
-    // shadow mapping
-    // create memory space for the framebuffer object
-    glGenBuffers(1, &shadow_map_fbo);
-    glBindFramebuffer(GL_FRAMEBUFFER, shadow_map_fbo);
-
-    // create memory space for the shadow map texture
-    glGenTextures(1, &shadow_map_to);
-    glBindTexture(GL_TEXTURE_2D, shadow_map_to);
-
-    // create an empty texture
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _initialWidth, _initialHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    // create memory space for the shadow map depth buffer
-    glGenRenderbuffers(1, &shadow_map_depth_bo);
-    glBindRenderbuffer(GL_RENDERBUFFER, shadow_map_depth_bo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, _initialWidth, _initialHeight);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-    // set shadow_map_to as our color texture #0 and shadow_map_depth_bo as our depth texture
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, shadow_map_to, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, shadow_map_depth_bo);
-
-    glDrawBuffers(1, shadow_map_draw_buffers); // "1" is the size of DrawBuffers
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "FRAMEBUFFER GONE WRONG" << std::endl;
 
     // default material
     Shader::Material default_s_material = {
