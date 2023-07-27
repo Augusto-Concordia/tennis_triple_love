@@ -23,7 +23,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     //initialize OS window with GLFW
-    GLFWwindow* window = glfwCreateWindow(INITIAL_WIDTH, INITIAL_HEIGHT, "Tennis Double Love", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(INITIAL_WIDTH, INITIAL_HEIGHT, "Tennis Triple Love", nullptr, nullptr);
     if (window == nullptr) {
         fprintf(stderr, "ERROR -> Could not open widow through GLFW\n");
         glfwTerminate();
