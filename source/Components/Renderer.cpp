@@ -104,7 +104,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     // letters
     letter_cubes = std::vector<VisualCube>(4);
 
-    Shader::Descriptor p_s_descriptor = {
+    Shader::Descriptor a_s_descriptor = {
         .vertex_shader_path = lit_vertex_shader_path,
         .fragment_shader_path = lit_fragment_shader_path,
         .color = glm::vec3(0.15f, 0.92f, 0.17f),
@@ -113,11 +113,11 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .ambient_strength = 0.2f,
         .shininess = 4,
     };
-    letter_cubes[0] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, p_s_descriptor); // letter p
+    letter_cubes[0] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, a_s_descriptor); // letter a
 
     letter_cubes[1] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_descriptor); // letter g
 
-    Shader::Descriptor n_s_descriptor = {
+    Shader::Descriptor j_s_descriptor = {
         .vertex_shader_path = lit_vertex_shader_path,
         .fragment_shader_path = lit_fragment_shader_path,
         .color = glm::vec3(0.34f, 0.84f, 0.98f),
@@ -126,7 +126,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .ambient_strength = 0.2f,
         .shininess = 128,
     };
-    letter_cubes[2] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, n_s_descriptor); // letter j
+    letter_cubes[2] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, j_s_descriptor); // letter j
 
     const auto racket_line_thickness = 2.0f;
     const auto racket_point_size = 3.0f;
@@ -315,6 +315,9 @@ void Renderer::DrawOneAugustoRacket(const glm::vec3 &position, const glm::vec3 &
     world_transform_matrix = glm::translate(world_transform_matrix, position);
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, rotation);
     world_transform_matrix = glm::scale(world_transform_matrix, scale);
+
+    // letter A
+    DrawOneA(world_transform_matrix);
 
     // forearm (skin)
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(45.0f, 0.0f, 0.0f));
@@ -616,89 +619,56 @@ void Renderer::DrawOneJackRacket(const glm::vec3 &position, const glm::vec3 &rot
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, 2.0f, 0.25f));
 }
 
-void Renderer::DrawOneP(glm::mat4 world_transform_matrix)
+// augusto letter A
+void Renderer::DrawOneA(glm::mat4 world_transform_matrix)
 {
-    // long P vertical
-    auto scale_factor = glm::vec3(0.5f, 5.0f, 0.5f);
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 20.0f, 0.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    auto scale_factor = glm::vec3(0.75f, 0.75f, 0.75f); // scale for one cube
+
+    // base transform
+    // rotating first, because we want to keep the original center of rotation
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 90.0f, 0.0f));
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(-scale_factor.x * 1.5f, 20.0f, 0.0f));
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(scale_factor));
+
+    // long left A vertical cubes
     letter_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
-    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
-    // short top P horizontal
-    scale_factor = glm::vec3(0.5f, 3.0f, 0.5f);
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 5.0f, 0.0f)); // translate to the end of the previous cube
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 0.0f, 90.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 1.0f, 0.0f));
     letter_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
-    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
-    // short right P vertical
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 3.0f, 0.0f)); // translate to the end of the previous cube
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 0.0f, 90.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 1.0f, 0.0f));
     letter_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
-    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
-    // short bottom P horizontal
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 3.0f, 0.0f)); // translate to the end of the previous cube
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 0.0f, 90.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 1.0f, 0.0f));
     letter_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
-    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
-}
 
-void Renderer::DrawOneI(glm::mat4 world_transform_matrix)
-{
-    // short I bottom horizontal
-    auto scale_factor = glm::vec3(0.5f, 3.0f, 0.5f);
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(-1.5f, 20.0f, 0.0f));
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 0.0f, 90.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[1].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
-    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+    // short top A horizontal cubes
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(1.0f, 1.0f, 0.0f));
+    letter_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
 
-    // long I vertical
-    scale_factor = glm::vec3(0.5f, 5.0f, 0.5f);
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 1.5f, 0.0f)); // translate to the middle of the previous cube
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 0.0f, -90.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[1].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
-    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(1.0f, 0.0f, 0.0f));
+    letter_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
 
-    // short I top horizontal
-    scale_factor = glm::vec3(0.5f, 3.0f, 0.5f);
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(-1.5f, 5.0f, 0.0f));
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 0.0f, 90.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[1].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
-    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
-}
+    // long right A vertical cubes
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(1.0f, -1.0f, 0.0f));
+    letter_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
 
-void Renderer::DrawOneN(glm::mat4 world_transform_matrix)
-{
-    // long N vertical
-    auto scale_factor = glm::vec3(0.5f, 5.0f, 0.5f);
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 20.0f, 0.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
-    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, -1.0f, 0.0f));
+    letter_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
 
-    // long N diagonal
-    scale_factor = glm::vec3(0.5f, 7.07f, 0.5f);
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 5.0f, 0.0f)); // translate to the end of the previous cube
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 0.0f, -135.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
-    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, -1.0f, 0.0f));
+    letter_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
 
-    // long N vertical
-    scale_factor = glm::vec3(0.5f, 5.0f, 0.5f);
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 7.07f, 0.0f)); // translate to the end of the previous cube
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 0.0f, 135.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
-    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, -1.0f, 0.0f));
+    letter_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
+
+    // short middle A horizontal cubes
+
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(-1.0f, 2.0f, 0.0f));
+    letter_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
+
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(-1.0f, 0.0f, 0.0f));
+    letter_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
 }
 
 // gabrielle letter G
