@@ -103,6 +103,8 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
 
     letter_cubes[1] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_material); // letter g
 
+    letter_cubes[2] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_material); // letter j
+
     Shader::Material j_s_material = {
         .vertex_shader_path = lit_vertex_shader_path,
         .fragment_shader_path = lit_fragment_shader_path,
@@ -192,7 +194,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
 
     // jack racket cube
     jack_racket_cube = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_material);
-    rackets[2] = default_rackets[0] = Racket(
+    rackets[2] = default_rackets[2] = Racket(
         glm::vec3(-10.0f, 0.0f, 0.0f),
         glm::vec3(0.0f),
         glm::vec3(0.8f));
@@ -573,30 +575,106 @@ void Renderer::DrawOneJackRacket(const glm::vec3 &position, const glm::vec3 &rot
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, rotation);
     world_transform_matrix = glm::scale(world_transform_matrix, scale);
 
+    // draw letter J //
     glm::mat4 secondary_transform_matrix = world_transform_matrix;
+    DrawOneJ(secondary_transform_matrix);
+
+    jack_racket_cube.material.color = glm::vec3(1.000f, 0.894f, 0.769f); // skin colour
 
     // forearm (skin)
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(135.0f, 0.0f, 0.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 1.0f, 5.0f));
-    jack_racket_cube.DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode);
-    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 1.0f, 0.2f));
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(45.0f, 0.0f, 0.0f));
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 5.0f, 1.0f));
+    jack_racket_cube.DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix, 
+                                        racket_render_mode);
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 0.2f, 1.0f));
 
     // arm (skin)
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 5.0f));
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(-22.5f * sin(glfwGetTime()) - 22.5f, 0.0f, 0.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 1.0f, 4.0f));
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 5.0f, 0.0f));
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(-45.0f, 0.0f, 0.0f));
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 4.0f, 1.0f));
     jack_racket_cube.DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
-                                   racket_render_mode);
-    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 1.0f, 0.25f));
+                                         racket_render_mode);
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 0.25f, 1.0f));
 
-    // racket handle (black plastic)
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 4.0f));
+    // racket //
+    jack_racket_cube.material.color = glm::vec3(0.0f, 0.5f, 0.5f); //colour
+
+    // racket handle 
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 4.0f, 0.0f));
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(0.0f, 0.0f, 0.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 0.5f, 4.0f));
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 5.0f, 0.5f));
     jack_racket_cube.DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
                                    racket_render_mode);
-    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, 2.0f, 0.25f));
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, 0.20f, 2.0f));
+
+    //base
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 5.0f, -2.5f));
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(-90.0f, 0.0f, 0.0f));
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 5.0f, 0.5f));
+    jack_racket_cube.DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
+                                   racket_render_mode);
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, 0.20f, 2.0f));
+
+    //left side
+    //world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 5.0f, 0.0f));
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(90.0f, 0.0f, 0.0f));
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 7.0f, 0.5f));
+    jack_racket_cube.DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
+                                   racket_render_mode);
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, (1.0f/7.0f), 2.0f));
+
+    //top side
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 7.0f, 0.0f));
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(-90.0f, 0.0f, 0.0f));
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 5.0f, 0.5f));
+    jack_racket_cube.DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
+                                   racket_render_mode);
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, (1.0f/5.0f), 2.0f));
+
+    //Right side
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 5.0f, 0.0f));
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(-90.0f, 0.0f, 0.0f));
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 7.0f, 0.5f));
+    jack_racket_cube.DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,
+                                   racket_render_mode);
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, (1.0f/7.0f), 2.0f));
+
+    //setup for nets
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(-90.0f, 0.0f, 0.0f));
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.2f, 0.0f));
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.1f, 4.5f, 0.1f));
+
+    jack_racket_cube.material.color = glm::vec3(1.0f, 1.0f, 1.0f); //colour
+
+    //||||||||||||||||||||||||
+    float j;
+    for(j=0; j<6.5; j+=0.5){
+
+        world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(10.0f, 1.0f/4.5f, 10.0f));
+        world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -0.5f));
+        world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.1f, 4.5f, 0.1f));
+        jack_racket_cube.DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,racket_render_mode); 
+    }
+
+    //-------------------------
+    //setup
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(10.0f, 1.0f/4.5f, 10.0f));
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(-90.0f, 0.0f, 0.0f));
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, -0.25f, 0.25f));
+
+    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.1f, 6.5f, 0.1f));
+
+    for(j=0; j<4.5; j+=0.5){
+        world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(10.0f, 1.0f/6.5f, 10.0f));
+        world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -0.5f));
+        world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.1f, 6.5f, 0.1f));
+        jack_racket_cube.DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix,racket_render_mode); 
+
+    }
+    
+
+
+
 }
 
 // augusto letter A
@@ -711,6 +789,78 @@ void Renderer::DrawOneG(glm::mat4 world_transform_matrix)
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
     letter_cubes[1].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+}
+
+
+// jack letter J
+void Renderer::DrawOneJ(glm::mat4 world_transform_matrix)
+{
+    auto scale_factor = glm::vec3(0.75f, 0.75f, 0.75f); // scale for one cube
+    letter_cubes[2].material.color = glm::vec3(1.0f, 0.714f, 0.757f); // white net colour
+
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 23.0f, -3.0f)); //go up and center
+
+    //since we want it to be blocky, gotta do it like pixel art 
+    //one block at a time 
+    //hence same scaling and jump of position 
+
+    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
+    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 0.75f)); //1 block to the left
+    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
+    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.75f));
+    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
+    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -1.5f));
+    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
+    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+
+
+    
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f));
+    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
+    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f));
+    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
+    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f));
+    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
+    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 0.75f));
+    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
+    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 0.75f));
+    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
+    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -2.25f));
+    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
+    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+
+    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -0.75f));
+    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+    letter_cubes[2].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), world_transform_matrix);
+    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
+
+
 }
 
 void Renderer::ResizeCallback(GLFWwindow *_window, int _displayWidth, int _displayHeight)
