@@ -70,7 +70,9 @@ public:
     void DrawOneAugustoRacket(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale);
     void DrawOneJackRacket(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale);
     void DrawOneGabrielleRacket(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale);
+
     void DrawOneP(glm::mat4 world_transform_matrix);
+    void DrawOneG(glm::mat4 world_transform_matrix);
 
     void ResizeCallback(GLFWwindow *_window, int _displayWidth, int _displayHeight);
     void InputCallback(GLFWwindow *_window, double _deltaTime);
