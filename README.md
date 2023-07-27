@@ -78,8 +78,3 @@ _The following changes the world orientation (orbits the camera)._
 * `T`: Renders the model as filled triangles (i.e. polygons)
 
 ## Progress
-### Full Camera Navigation w/ Phong Lighting (12/07/2023)
-https://github.com/Augusto-Concordia/tennis_love/assets/33916325/15838677-ba8e-4027-9bad-2c87af538d42
-
-### Complete Project w/ All Model & Camera Transformations
-https://github.com/Augusto-Concordia/tennis_love/assets/33916325/85b3e78a-94c6-4705-8db8-3f6d3749b057
