@@ -8,6 +8,8 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
 
     default_shader = Shader::Library::CreateShader("shaders/default.vert", "shaders/default.frag");
 
+    main_light = std::make_unique<Light>(glm::vec3(0.0f, 13.0f, 0.0f), glm::vec3(0.99f, 0.95f, 0.78f), 0.2f, 0.4f);
+
     const char *lit_vertex_shader_path = "shaders/lit/lit.vert";
     const char *lit_fragment_shader_path = "shaders/lit/lit.frag";
 
@@ -15,7 +17,9 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     Shader::Material default_s_material = {
         .vertex_shader_path = lit_vertex_shader_path,
         .fragment_shader_path = lit_fragment_shader_path,
-        .color = glm::vec3(1.0f)};
+        .color = glm::vec3(1.0f),
+        .main_light = main_light,
+    };
 
     // grid
     Shader::Material grid_s_material = {
@@ -54,20 +58,6 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     main_y_line = std::make_unique<VisualLine>(glm::vec3(0.01f), glm::vec3(0.01f, 5.01f, 0.01f), y_line_s_material);
     main_z_line = std::make_unique<VisualLine>(glm::vec3(0.01f), glm::vec3(0.01f, 0.01f, 5.01f), z_line_s_material);
 
-    // light
-    // the way it currently is, isn't ideal, but it works for a quick demo
-    // eventually, it will become its own component
-    const auto light_position = glm::vec3(0.0f, 13.0f, 0.0f);
-    const auto light_color = glm::vec3(0.99f, 0.95f, 0.78f);
-
-    Shader::Material sun_s_material = {
-        .vertex_shader_path = unlit_vertex_shader_path,
-        .fragment_shader_path = unlit_fragment_shader_path,
-        .color = light_color,
-    };
-    VisualCube sun_cube = VisualCube(light_position, glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(0.0f), sun_s_material); // sun
-    main_light = std::make_unique<Light>(sun_cube, light_position, light_color);
-
     // world cube
     Shader::Material world_s_material = {
         .vertex_shader_path = unlit_vertex_shader_path,
@@ -85,8 +75,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .vertex_shader_path = lit_vertex_shader_path,
         .fragment_shader_path = lit_fragment_shader_path,
         .color = glm::vec3(0.51f, 0.53f, 0.53f),
-        .light_position = main_light->position,
-        .light_color = main_light->color,
+        .main_light = main_light,
         .shininess = 4,
     };
     net_cubes[0] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, netpost_s_material); // net post
@@ -95,8 +84,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .vertex_shader_path = lit_vertex_shader_path,
         .fragment_shader_path = lit_fragment_shader_path,
         .color = glm::vec3(0.96f, 0.96f, 0.96f),
-        .light_position = main_light->position,
-        .light_color = main_light->color,
+        .main_light = main_light,
         .shininess = 128,
     };
     net_cubes[1] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, net_s_material); // net
@@ -108,9 +96,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .vertex_shader_path = lit_vertex_shader_path,
         .fragment_shader_path = lit_fragment_shader_path,
         .color = glm::vec3(0.15f, 0.92f, 0.17f),
-        .light_position = main_light->position,
-        .light_color = main_light->color,
-        .ambient_strength = 0.2f,
+        .main_light = main_light,
         .shininess = 4,
     };
     letter_cubes[0] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, a_s_material); // letter a
@@ -121,9 +107,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .vertex_shader_path = lit_vertex_shader_path,
         .fragment_shader_path = lit_fragment_shader_path,
         .color = glm::vec3(0.34f, 0.84f, 0.98f),
-        .light_position = main_light->position,
-        .light_color = main_light->color,
-        .ambient_strength = 0.2f,
+        .main_light = main_light,
         .shininess = 128,
     };
     letter_cubes[2] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, j_s_material); // letter j
@@ -144,8 +128,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .line_thickness = racket_line_thickness,
         .point_size = racket_point_size,
         .color = glm::vec3(0.58f, 0.38f, 0.24f),
-        .light_position = main_light->position,
-        .light_color = main_light->color,
+        .main_light = main_light,
         .shininess = 2,
     }); // skin
 
@@ -155,8 +138,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .line_thickness = racket_line_thickness,
         .point_size = racket_point_size,
         .color = glm::vec3(0.2f),
-        .light_position = main_light->position,
-        .light_color = main_light->color,
+        .main_light = main_light,
         .shininess = 64,
     }); // racket handle (black plastic)
 
@@ -166,8 +148,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .line_thickness = racket_line_thickness,
         .point_size = racket_point_size,
         .color = glm::vec3(0.1f, 0.2f, 0.9f),
-        .light_position = main_light->position,
-        .light_color = main_light->color,
+        .main_light = main_light,
         .shininess = 64,
     }); // racket piece (blue plastic)
 
@@ -177,8 +158,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .line_thickness = racket_line_thickness,
         .point_size = racket_point_size,
         .color = glm::vec3(0.1f, 0.9f, 0.2f),
-        .light_position = main_light->position,
-        .light_color = main_light->color,
+        .main_light = main_light,
         .shininess = 64,
     }); // racket piece (green plastic)
 
@@ -189,8 +169,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .point_size = racket_point_size,
         .color = glm::vec3(0.94f),
         .alpha = 0.95f,
-        .light_position = main_light->position,
-        .light_color = main_light->color,
+        .main_light = main_light,
         .shininess = 64,
     }); // racket net (white plastic)
 
@@ -231,6 +210,10 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     // activates the default shader
     default_shader->Use();
 
+    // moves the main light
+    auto light_turning_radius = 4.0f;
+    main_light->position = glm::vec3(glm::cos(glfwGetTime()) * light_turning_radius, 15.0f, glm::sin(glfwGetTime()) * light_turning_radius);
+
     // draws the world cube
     world_cube->Draw(main_camera->GetViewProjection(), main_camera->GetPosition());
 
@@ -241,9 +224,6 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     main_x_line->Draw(main_camera->GetViewProjection(), main_camera->GetPosition());
     main_y_line->Draw(main_camera->GetViewProjection(), main_camera->GetPosition());
     main_z_line->Draw(main_camera->GetViewProjection(), main_camera->GetPosition());
-
-    // draws the sun
-    main_light->cube.Draw(main_camera->GetViewProjection(), main_camera->GetPosition());
 
     // draws the net
     DrawOneNet(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f));

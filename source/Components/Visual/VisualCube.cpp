@@ -1,7 +1,9 @@
 #include "VisualCube.h"
+
+#include <utility>
 #include "Utility/Transform.hpp"
 
-VisualCube::VisualCube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _transformOffset, Shader::Material _material) : VisualObject(_position, _rotation, _scale, _material)
+VisualCube::VisualCube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _transformOffset, Shader::Material _material) : VisualObject(_position, _rotation, _scale, std::move(_material))
 {
     // vertices with their normals
     vertices = {
@@ -286,11 +288,11 @@ void VisualCube::DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec
 
     shader->SetVec3("u_cam_pos", _cameraPosition);
 
-    shader->SetVec3("u_light_pos", current_material->light_position);
-    shader->SetVec3("u_light_color", current_material->light_color);
+    shader->SetVec3("u_light_pos", current_material->main_light->position);
+    shader->SetVec3("u_light_color", current_material->main_light->color);
 
-    shader->SetFloat("u_ambient_strength", current_material->ambient_strength);
-    shader->SetFloat("u_specular_strength", current_material->specular_strength);
+    shader->SetFloat("u_ambient_strength", current_material->main_light->ambient_strength);
+    shader->SetFloat("u_specular_strength", current_material->main_light->specular_strength);
     shader->SetInt("u_shininess", current_material->shininess);
 
     glLineWidth(current_material->line_thickness);

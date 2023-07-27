@@ -31,7 +31,7 @@ void main() {
     vec3 lightDir = normalize(u_light_pos - FragPos);
     float lightDistance = length(u_light_pos - FragPos);
 
-    float diffFactor = dot(lightDir, norm);
+    float diffFactor = max(dot(lightDir, norm), 0.0);
     vec3 diffuse = diffFactor * u_light_color;
 
     //specular lighting calculation

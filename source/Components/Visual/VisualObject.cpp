@@ -1,11 +1,13 @@
 #include "VisualObject.h"
 
+#include <utility>
+
 VisualObject::VisualObject(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, Shader::Material _material) {
     position = _position;
     rotation = _rotation;
     scale = _scale;
 
-    material = _material;
+    material = std::move(_material);
 
     vertex_array_o = 0;
     vertex_buffer_o = 0;

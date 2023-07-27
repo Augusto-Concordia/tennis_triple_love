@@ -6,6 +6,7 @@
 #include "glm/vec2.hpp"
 #include "glm/mat4x4.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "Light.h"
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -45,11 +46,8 @@ public:
         glm::vec3 color = glm::vec3(1.0f);
         float alpha = 1.0f;
 
-        glm::vec3 light_position = glm::vec3(0.0f);
-        glm::vec3 light_color = glm::vec3(1.0f);
+        std::shared_ptr<Light> main_light = std::make_shared<Light>();
 
-        float ambient_strength = 0.1f;
-        float specular_strength = 0.5f;
         int shininess = 32;
     };
 
