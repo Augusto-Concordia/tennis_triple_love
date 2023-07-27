@@ -11,8 +11,8 @@ public:
     // Transform properties
     glm::vec3 position, rotation, scale;
 
-    // Descriptor for the shader used by this object
-    Shader::Descriptor shader_descriptor;
+    // Material for the shader used by this object
+    Shader::Material material;
 
 protected:
     // OpenGL shader
@@ -29,10 +29,10 @@ protected:
     GLuint element_buffer_o;
 
 public:
-    explicit VisualObject(glm::vec3 _position = glm::vec3(0.0f), glm::vec3 _rotation = glm::vec3(0.0f), glm::vec3 _scale = glm::vec3(1.0f), Shader::Descriptor _descriptor = Shader::Descriptor());
+    explicit VisualObject(glm::vec3 _position = glm::vec3(0.0f), glm::vec3 _rotation = glm::vec3(0.0f), glm::vec3 _scale = glm::vec3(1.0f), Shader::Material _material = Shader::Material());
 
-    virtual void Draw(const glm::mat4 &_viewProjection, const glm::vec3 &_cameraPosition, int render_mode, const Shader::Descriptor *material) = 0;
-    virtual void DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec3 &_cameraPosition, const glm::mat4 &_transformMatrix, int _renderMode, const Shader::Descriptor *material) = 0;
+    virtual void Draw(const glm::mat4 &_viewProjection, const glm::vec3 &_cameraPosition, int render_mode, const Shader::Material *material) = 0;
+    virtual void DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec3 &_cameraPosition, const glm::mat4 &_transformMatrix, int _renderMode, const Shader::Material *material) = 0;
 
 protected:
     virtual void SetupGlBuffersVerticesOnly();

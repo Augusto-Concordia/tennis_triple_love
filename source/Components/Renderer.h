@@ -50,7 +50,7 @@ private:
     std::vector<VisualCube> letter_cubes;
 
     std::shared_ptr<VisualCube> augusto_racket_cube;
-    std::vector<Shader::Descriptor> augusto_racket_materials;
+    std::vector<Shader::Material> augusto_racket_materials;
 
     VisualCube gabrielle_racket_cube;
     VisualCube jack_racket_cube;

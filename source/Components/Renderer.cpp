@@ -12,37 +12,37 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     const char *lit_fragment_shader_path = "shaders/lit/lit.frag";
 
     // default material
-    Shader::Descriptor default_s_descriptor = {
+    Shader::Material default_s_material = {
         .vertex_shader_path = lit_vertex_shader_path,
         .fragment_shader_path = lit_fragment_shader_path,
         .color = glm::vec3(1.0f)};
 
     // grid
-    Shader::Descriptor grid_s_descriptor = {
+    Shader::Material grid_s_material = {
         .vertex_shader_path = "shaders/grid/grid.vert",
         .fragment_shader_path = "shaders/grid/grid.frag",
         .alpha = 0.4f};
-    main_grid = std::make_unique<VisualGrid>(78, 36, 1.0f, glm::vec3(0.0f), glm::vec3(90.0f, 0.0f, 0.0f), grid_s_descriptor);
+    main_grid = std::make_unique<VisualGrid>(78, 36, 1.0f, glm::vec3(0.0f), glm::vec3(90.0f, 0.0f, 0.0f), grid_s_material);
 
     const char *unlit_vertex_shader_path = "shaders/unlit/unlit.vert";
     const char *unlit_fragment_shader_path = "shaders/unlit/unlit.frag";
 
     // axis lines
-    Shader::Descriptor x_line_s_descriptor = {
+    Shader::Material x_line_s_material = {
         .vertex_shader_path = unlit_vertex_shader_path,
         .fragment_shader_path = unlit_fragment_shader_path,
         .line_thickness = 3.0f,
         .color = glm::vec3(1.0f, 0.0f, 0.0f),
     };
 
-    Shader::Descriptor y_line_s_descriptor = {
+    Shader::Material y_line_s_material = {
         .vertex_shader_path = unlit_vertex_shader_path,
         .fragment_shader_path = unlit_fragment_shader_path,
         .line_thickness = 3.0f,
         .color = glm::vec3(0.0f, 1.0f, 0.0f),
     };
 
-    Shader::Descriptor z_line_s_descriptor = {
+    Shader::Material z_line_s_material = {
         .vertex_shader_path = unlit_vertex_shader_path,
         .fragment_shader_path = unlit_fragment_shader_path,
         .line_thickness = 3.0f,
@@ -50,9 +50,9 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     };
 
     // this is a quick way to make the axis lines avoid having depth fighting issues
-    main_x_line = std::make_unique<VisualLine>(glm::vec3(0.01f), glm::vec3(5.01f, 0.01f, 0.01f), x_line_s_descriptor);
-    main_y_line = std::make_unique<VisualLine>(glm::vec3(0.01f), glm::vec3(0.01f, 5.01f, 0.01f), y_line_s_descriptor);
-    main_z_line = std::make_unique<VisualLine>(glm::vec3(0.01f), glm::vec3(0.01f, 0.01f, 5.01f), z_line_s_descriptor);
+    main_x_line = std::make_unique<VisualLine>(glm::vec3(0.01f), glm::vec3(5.01f, 0.01f, 0.01f), x_line_s_material);
+    main_y_line = std::make_unique<VisualLine>(glm::vec3(0.01f), glm::vec3(0.01f, 5.01f, 0.01f), y_line_s_material);
+    main_z_line = std::make_unique<VisualLine>(glm::vec3(0.01f), glm::vec3(0.01f, 0.01f, 5.01f), z_line_s_material);
 
     // light
     // the way it currently is, isn't ideal, but it works for a quick demo
@@ -60,20 +60,20 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     const auto light_position = glm::vec3(0.0f, 13.0f, 0.0f);
     const auto light_color = glm::vec3(0.99f, 0.95f, 0.78f);
 
-    Shader::Descriptor sun_s_descriptor = {
+    Shader::Material sun_s_material = {
         .vertex_shader_path = unlit_vertex_shader_path,
         .fragment_shader_path = unlit_fragment_shader_path,
         .color = light_color,
     };
-    VisualCube sun_cube = VisualCube(light_position, glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(0.0f), sun_s_descriptor); // sun
+    VisualCube sun_cube = VisualCube(light_position, glm::vec3(0.0f), glm::vec3(1.0f), glm::vec3(0.0f), sun_s_material); // sun
     main_light = std::make_unique<Light>(sun_cube, light_position, light_color);
 
     // world cube
-    Shader::Descriptor world_s_descriptor = {
+    Shader::Material world_s_material = {
         .vertex_shader_path = unlit_vertex_shader_path,
         .fragment_shader_path = unlit_fragment_shader_path,
         .color = glm::vec3(0.53f, 0.81f, 0.92f)};
-    world_cube = std::make_unique<VisualCube>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(200.0f), glm::vec3(0.0f), world_s_descriptor);
+    world_cube = std::make_unique<VisualCube>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(200.0f), glm::vec3(0.0f), world_s_material);
 
     // cube transform point offset (i.e. to scale it from the bottom-up)
     auto bottom_y_transform_offset = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -81,7 +81,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     // net
     net_cubes = std::vector<VisualCube>(2);
 
-    Shader::Descriptor netpost_s_descriptor = {
+    Shader::Material netpost_s_material = {
         .vertex_shader_path = lit_vertex_shader_path,
         .fragment_shader_path = lit_fragment_shader_path,
         .color = glm::vec3(0.51f, 0.53f, 0.53f),
@@ -89,9 +89,9 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .light_color = main_light->color,
         .shininess = 4,
     };
-    net_cubes[0] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, netpost_s_descriptor); // net post
+    net_cubes[0] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, netpost_s_material); // net post
 
-    Shader::Descriptor net_s_descriptor = {
+    Shader::Material net_s_material = {
         .vertex_shader_path = lit_vertex_shader_path,
         .fragment_shader_path = lit_fragment_shader_path,
         .color = glm::vec3(0.96f, 0.96f, 0.96f),
@@ -99,12 +99,12 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .light_color = main_light->color,
         .shininess = 128,
     };
-    net_cubes[1] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, net_s_descriptor); // net
+    net_cubes[1] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, net_s_material); // net
 
     // letters
     letter_cubes = std::vector<VisualCube>(4);
 
-    Shader::Descriptor a_s_descriptor = {
+    Shader::Material a_s_material = {
         .vertex_shader_path = lit_vertex_shader_path,
         .fragment_shader_path = lit_fragment_shader_path,
         .color = glm::vec3(0.15f, 0.92f, 0.17f),
@@ -113,11 +113,11 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .ambient_strength = 0.2f,
         .shininess = 4,
     };
-    letter_cubes[0] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, a_s_descriptor); // letter a
+    letter_cubes[0] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, a_s_material); // letter a
 
-    letter_cubes[1] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_descriptor); // letter g
+    letter_cubes[1] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_material); // letter g
 
-    Shader::Descriptor j_s_descriptor = {
+    Shader::Material j_s_material = {
         .vertex_shader_path = lit_vertex_shader_path,
         .fragment_shader_path = lit_fragment_shader_path,
         .color = glm::vec3(0.34f, 0.84f, 0.98f),
@@ -126,14 +126,14 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .ambient_strength = 0.2f,
         .shininess = 128,
     };
-    letter_cubes[2] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, j_s_descriptor); // letter j
+    letter_cubes[2] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, j_s_material); // letter j
 
     const auto racket_line_thickness = 2.0f;
     const auto racket_point_size = 3.0f;
 
     // augusto racket cube + materials
-    augusto_racket_cube = std::make_shared<VisualCube>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_descriptor);
-    augusto_racket_materials = std::vector<Shader::Descriptor>();
+    augusto_racket_cube = std::make_shared<VisualCube>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_material);
+    augusto_racket_materials = std::vector<Shader::Material>();
 
     rackets = std::vector<Racket>(3);
     default_rackets = std::vector<Racket>(3);
@@ -203,7 +203,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     ////
 
     // gabrielle racket cube
-    gabrielle_racket_cube = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_descriptor);
+    gabrielle_racket_cube = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_material);
     rackets[1] = default_rackets[1] = Racket(
         glm::vec3(10.0f, 0.0f, 0.0f),
         glm::vec3(0.0f),
@@ -212,7 +212,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     ////
 
     // jack racket cube
-    jack_racket_cube = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_descriptor);
+    jack_racket_cube = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_material);
     rackets[2] = default_rackets[0] = Racket(
         glm::vec3(-10.0f, 0.0f, 0.0f),
         glm::vec3(0.0f),
@@ -480,7 +480,7 @@ void Renderer::DrawOneGabrielleRacket(const glm::vec3 &position, const glm::vec3
     DrawOneG(secondary_transform_matrix);
 
     // arm //
-    gabrielle_racket_cube.shader_descriptor.color = glm::vec3(0.871f, 0.722f, 0.529f); // skin colour
+    gabrielle_racket_cube.material.color = glm::vec3(0.871f, 0.722f, 0.529f); // skin colour
 
     // forearm (skin)
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(45.0f, 0.0f, 0.0f));
@@ -498,7 +498,7 @@ void Renderer::DrawOneGabrielleRacket(const glm::vec3 &position, const glm::vec3
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 0.25f, 1.0f));
 
     // racket //
-    gabrielle_racket_cube.shader_descriptor.color = glm::vec3(1.0f, 0.714f, 0.757f); // pink colour
+    gabrielle_racket_cube.material.color = glm::vec3(1.0f, 0.714f, 0.757f); // pink colour
 
     // racket handle
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 4.0f, 0.0f));
@@ -575,7 +575,7 @@ void Renderer::DrawOneGabrielleRacket(const glm::vec3 &position, const glm::vec3
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(0.5f, 1 / 2.25f, 0.5f));
 
     // net //
-    gabrielle_racket_cube.shader_descriptor.color = glm::vec3(1.0f, 1.0f, 1.0f); // white net colour
+    gabrielle_racket_cube.material.color = glm::vec3(1.0f, 1.0f, 1.0f); // white net colour
 
 }
 
@@ -675,7 +675,7 @@ void Renderer::DrawOneA(glm::mat4 world_transform_matrix)
 void Renderer::DrawOneG(glm::mat4 world_transform_matrix)
 {
     auto scale_factor = glm::vec3(0.75f, 0.75f, 0.75f); // scale for one cube
-    letter_cubes[1].shader_descriptor.color = glm::vec3(1.0f, 0.714f, 0.757f); // white net colour
+    letter_cubes[1].material.color = glm::vec3(1.0f, 0.714f, 0.757f); // white net colour
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 20.0f, -3.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);

@@ -1,7 +1,7 @@
 #include "VisualCube.h"
 #include "Utility/Transform.hpp"
 
-VisualCube::VisualCube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _transformOffset, Shader::Descriptor _descriptor) : VisualObject(_position, _rotation, _scale, _descriptor)
+VisualCube::VisualCube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _transformOffset, Shader::Material _material) : VisualObject(_position, _rotation, _scale, _material)
 {
     // vertices with their normals
     vertices = {
@@ -256,7 +256,7 @@ VisualCube::VisualCube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scal
     VisualObject::SetupGlBuffersVerticesAndNormalsOnlyNoIndices();
 }
 
-void VisualCube::Draw(const glm::mat4 &_viewProjection, const glm::vec3 &_cameraPosition, int _renderMode, const Shader::Descriptor *material)
+void VisualCube::Draw(const glm::mat4 &_viewProjection, const glm::vec3 &_cameraPosition, int _renderMode, const Shader::Material *material)
 {
     glm::mat4 model_matrix = glm::mat4(1.0f);
     model_matrix = glm::translate(model_matrix, position);
@@ -266,18 +266,16 @@ void VisualCube::Draw(const glm::mat4 &_viewProjection, const glm::vec3 &_camera
     DrawFromMatrix(_viewProjection, _cameraPosition, model_matrix, _renderMode, material);
 }
 
-void VisualCube::DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec3 &_cameraPosition, const glm::mat4 &_transformMatrix, int _renderMode, const Shader::Descriptor *material)
+void VisualCube::DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec3 &_cameraPosition, const glm::mat4 &_transformMatrix, int _renderMode, const Shader::Material *_material)
 {
     // bind the vertex array to draw
     glBindVertexArray(vertex_array_o);
 
-    const Shader::Descriptor *current_material = &shader_descriptor;
+    const Shader::Material *current_material = &material;
 
     // set the material to use on this frame
-    if (material != nullptr)
-    {
-        current_material = material;
-    }
+    if (_material != nullptr)
+        current_material = _material;
 
     shader->Use();
     shader->SetModelMatrix(_transformMatrix);

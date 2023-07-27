@@ -34,7 +34,7 @@ public:
     };
 
     // Describes all of a shader's properties (regardless of whether they are used or not)
-    struct Descriptor {
+    struct Material {
     public:
         const char* vertex_shader_path = "shaders/default.vert";
         const char* fragment_shader_path = "shaders/default.frag";
