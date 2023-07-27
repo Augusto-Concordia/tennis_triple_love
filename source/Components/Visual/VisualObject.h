@@ -15,9 +15,6 @@ public:
     Shader::Material material;
 
 protected:
-    // OpenGL shader
-    std::shared_ptr<Shader> shader;
-
     // Vertices and indices used by this object
     // May or may not be used, depending on the implementation
     std::vector<float> vertices;

@@ -12,8 +12,6 @@ VisualObject::VisualObject(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _
     vertex_array_o = 0;
     vertex_buffer_o = 0;
     element_buffer_o = 0;
-
-    shader = Shader::Library::CreateShader(material.vertex_shader_path, material.fragment_shader_path);
 }
 
 void VisualObject::SetupGlBuffersVerticesOnly() {

@@ -52,6 +52,9 @@ int main() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glfwSetKeyCallback(window, Input::KeyCallback);
+    glfwSetErrorCallback([] (int code, const char* desc) {
+       std::cout << code << " " << desc << std::endl;
+    });
 
     Renderer main_renderer = Renderer(INITIAL_WIDTH, INITIAL_HEIGHT);
 
@@ -85,7 +88,7 @@ int main() {
         //stores current time for next frame
         previous_time = glfwGetTime();
 
-        //swap buffers and prepare for next frame
+        // swap buffers and prepare for next frame
         glfwSwapBuffers(window);
     }
 

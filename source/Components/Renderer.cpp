@@ -10,45 +10,39 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
 
     main_light = std::make_unique<Light>(glm::vec3(0.0f, 13.0f, 0.0f), glm::vec3(0.99f, 0.95f, 0.78f), 0.2f, 0.4f);
 
-    const char *lit_vertex_shader_path = "shaders/lit/lit.vert";
-    const char *lit_fragment_shader_path = "shaders/lit/lit.frag";
+    auto grid_shader = Shader::Library::CreateShader("shaders/grid/grid.vert", "shaders/grid/grid.frag");
+    auto unlit_shader = Shader::Library::CreateShader("shaders/unlit/unlit.vert", "shaders/unlit/unlit.frag");
+    auto lit_shader = Shader::Library::CreateShader("shaders/lit/lit.vert", "shaders/lit/lit.frag");
 
     // default material
     Shader::Material default_s_material = {
-        .vertex_shader_path = lit_vertex_shader_path,
-        .fragment_shader_path = lit_fragment_shader_path,
+        .shader = lit_shader,
         .color = glm::vec3(1.0f),
         .main_light = main_light,
     };
 
     // grid
     Shader::Material grid_s_material = {
-        .vertex_shader_path = "shaders/grid/grid.vert",
-        .fragment_shader_path = "shaders/grid/grid.frag",
-        .alpha = 0.4f};
+        .shader = grid_shader,
+        .alpha = 0.4f,
+    };
     main_grid = std::make_unique<VisualGrid>(78, 36, 1.0f, glm::vec3(0.0f), glm::vec3(90.0f, 0.0f, 0.0f), grid_s_material);
-
-    const char *unlit_vertex_shader_path = "shaders/unlit/unlit.vert";
-    const char *unlit_fragment_shader_path = "shaders/unlit/unlit.frag";
 
     // axis lines
     Shader::Material x_line_s_material = {
-        .vertex_shader_path = unlit_vertex_shader_path,
-        .fragment_shader_path = unlit_fragment_shader_path,
+        .shader = unlit_shader,
         .line_thickness = 3.0f,
         .color = glm::vec3(1.0f, 0.0f, 0.0f),
     };
 
     Shader::Material y_line_s_material = {
-        .vertex_shader_path = unlit_vertex_shader_path,
-        .fragment_shader_path = unlit_fragment_shader_path,
+        .shader = unlit_shader,
         .line_thickness = 3.0f,
         .color = glm::vec3(0.0f, 1.0f, 0.0f),
     };
 
     Shader::Material z_line_s_material = {
-        .vertex_shader_path = unlit_vertex_shader_path,
-        .fragment_shader_path = unlit_fragment_shader_path,
+        .shader = unlit_shader,
         .line_thickness = 3.0f,
         .color = glm::vec3(0.0f, 0.0f, 1.0f),
     };
@@ -60,9 +54,9 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
 
     // world cube
     Shader::Material world_s_material = {
-        .vertex_shader_path = unlit_vertex_shader_path,
-        .fragment_shader_path = unlit_fragment_shader_path,
-        .color = glm::vec3(0.53f, 0.81f, 0.92f)};
+        .shader = unlit_shader,
+        .color = glm::vec3(0.53f, 0.81f, 0.92f),
+    };
     world_cube = std::make_unique<VisualCube>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(200.0f), glm::vec3(0.0f), world_s_material);
 
     // cube transform point offset (i.e. to scale it from the bottom-up)
@@ -72,8 +66,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     net_cubes = std::vector<VisualCube>(2);
 
     Shader::Material netpost_s_material = {
-        .vertex_shader_path = lit_vertex_shader_path,
-        .fragment_shader_path = lit_fragment_shader_path,
+        .shader = lit_shader,
         .color = glm::vec3(0.51f, 0.53f, 0.53f),
         .main_light = main_light,
         .shininess = 4,
@@ -81,8 +74,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     net_cubes[0] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, netpost_s_material); // net post
 
     Shader::Material net_s_material = {
-        .vertex_shader_path = lit_vertex_shader_path,
-        .fragment_shader_path = lit_fragment_shader_path,
+        .shader = lit_shader,
         .color = glm::vec3(0.96f, 0.96f, 0.96f),
         .main_light = main_light,
         .shininess = 128,
@@ -93,8 +85,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     letter_cubes = std::vector<VisualCube>(4);
 
     Shader::Material a_s_material = {
-        .vertex_shader_path = lit_vertex_shader_path,
-        .fragment_shader_path = lit_fragment_shader_path,
+        .shader = lit_shader,
         .color = glm::vec3(0.15f, 0.92f, 0.17f),
         .main_light = main_light,
         .shininess = 4,
@@ -106,8 +97,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     letter_cubes[2] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_material); // letter j
 
     Shader::Material j_s_material = {
-        .vertex_shader_path = lit_vertex_shader_path,
-        .fragment_shader_path = lit_fragment_shader_path,
+        .shader = lit_shader,
         .color = glm::vec3(0.34f, 0.84f, 0.98f),
         .main_light = main_light,
         .shininess = 128,
@@ -125,8 +115,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     default_rackets = std::vector<Racket>(3);
 
     augusto_racket_materials.push_back({
-        .vertex_shader_path = lit_vertex_shader_path,
-        .fragment_shader_path = lit_fragment_shader_path,
+        .shader = lit_shader,
         .line_thickness = racket_line_thickness,
         .point_size = racket_point_size,
         .color = glm::vec3(0.58f, 0.38f, 0.24f),
@@ -135,8 +124,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     }); // skin
 
     augusto_racket_materials.push_back({
-        .vertex_shader_path = lit_vertex_shader_path,
-        .fragment_shader_path = lit_fragment_shader_path,
+        .shader = lit_shader,
         .line_thickness = racket_line_thickness,
         .point_size = racket_point_size,
         .color = glm::vec3(0.2f),
@@ -145,8 +133,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     }); // racket handle (black plastic)
 
     augusto_racket_materials.push_back({
-        .vertex_shader_path = lit_vertex_shader_path,
-        .fragment_shader_path = lit_fragment_shader_path,
+        .shader = lit_shader,
         .line_thickness = racket_line_thickness,
         .point_size = racket_point_size,
         .color = glm::vec3(0.1f, 0.2f, 0.9f),
@@ -155,8 +142,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     }); // racket piece (blue plastic)
 
     augusto_racket_materials.push_back({
-        .vertex_shader_path = lit_vertex_shader_path,
-        .fragment_shader_path = lit_fragment_shader_path,
+        .shader = lit_shader,
         .line_thickness = racket_line_thickness,
         .point_size = racket_point_size,
         .color = glm::vec3(0.1f, 0.9f, 0.2f),
@@ -165,8 +151,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     }); // racket piece (green plastic)
 
     augusto_racket_materials.push_back({
-        .vertex_shader_path = lit_vertex_shader_path,
-        .fragment_shader_path = lit_fragment_shader_path,
+        .shader = lit_shader,
         .line_thickness = racket_line_thickness,
         .point_size = racket_point_size,
         .color = glm::vec3(0.94f),

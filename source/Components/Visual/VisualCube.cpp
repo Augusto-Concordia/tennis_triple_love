@@ -279,21 +279,21 @@ void VisualCube::DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec
     if (_material != nullptr)
         current_material = _material;
 
-    shader->Use();
-    shader->SetModelMatrix(_transformMatrix);
-    shader->SetViewProjectionMatrix(_viewProjection);
+    current_material->shader->Use();
+    current_material->shader->SetModelMatrix(_transformMatrix);
+    current_material->shader->SetViewProjectionMatrix(_viewProjection);
 
-    shader->SetVec3("u_color", current_material->color);
-    shader->SetFloat("u_alpha", current_material->alpha);
+    current_material->shader->SetVec3("u_color", current_material->color);
+    current_material->shader->SetFloat("u_alpha", current_material->alpha);
 
-    shader->SetVec3("u_cam_pos", _cameraPosition);
+    current_material->shader->SetVec3("u_cam_pos", _cameraPosition);
 
-    shader->SetVec3("u_light_pos", current_material->main_light->position);
-    shader->SetVec3("u_light_color", current_material->main_light->color);
+    current_material->shader->SetVec3("u_light_pos", current_material->main_light->position);
+    current_material->shader->SetVec3("u_light_color", current_material->main_light->color);
 
-    shader->SetFloat("u_ambient_strength", current_material->main_light->ambient_strength);
-    shader->SetFloat("u_specular_strength", current_material->main_light->specular_strength);
-    shader->SetInt("u_shininess", current_material->shininess);
+    current_material->shader->SetFloat("u_ambient_strength", current_material->main_light->ambient_strength);
+    current_material->shader->SetFloat("u_specular_strength", current_material->main_light->specular_strength);
+    current_material->shader->SetInt("u_shininess", current_material->shininess);
 
     glLineWidth(current_material->line_thickness);
     glPointSize(current_material->point_size);
