@@ -51,6 +51,11 @@ private:
     int racket_render_mode = GL_TRIANGLES;
     int selected_player = 4;
 
+    GLuint shadow_map_fbo = 0;
+    GLuint shadow_map_to = 0;
+    GLuint shadow_map_depth_bo = 0;
+    GLuint shadow_map_draw_buffers[1] = { GL_COLOR_ATTACHMENT0 };
+
 public:
     Renderer(int _initialWidth, int _initialHeight);
 

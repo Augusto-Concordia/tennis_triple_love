@@ -217,6 +217,8 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
 
 void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
 {
+    glBindFramebuffer(GL_FRAMEBUFFER, shadow_map_fbo);
+
     // clears the canvas to black
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -248,6 +250,9 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     DrawOneAugustoRacket(rackets[0].position, rackets[0].rotation, rackets[0].scale);
     DrawOneGabrielleRacket(rackets[1].position, rackets[1].rotation, rackets[1].scale);
     DrawOneJackRacket(rackets[2].position, rackets[2].rotation, rackets[2].scale);
+
+    // unbind the current framebuffer
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::DrawOneNet(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale)
