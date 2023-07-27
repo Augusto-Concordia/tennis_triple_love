@@ -37,8 +37,7 @@ public:
     // Describes all of a shader's properties (regardless of whether they are used or not)
     struct Material {
     public:
-        const char* vertex_shader_path = "shaders/default.vert";
-        const char* fragment_shader_path = "shaders/default.frag";
+        std::shared_ptr<Shader> shader = std::make_shared<Shader>(-1, -1, -1);
 
         float line_thickness = 1.0f;
         float point_size = 1.0f;

@@ -108,7 +108,7 @@ Shader::Library::AddShader(const std::string& _name, GLenum _type, GLsizei _coun
         glGetShaderInfoLog(shader_id, 512, nullptr, log);
 
         std::cout << "ERROR::SHADER::" << ((_type == GL_VERTEX_SHADER) ? "VERTEX" : "FRAGMENT")
-                  << "::COMPILATION_FAILED -> " << log << std::endl;
+                  << "::COMPILATION_FAILED -> (" << _name << ") " << log << std::endl;
     }
 
     Shader::Library::shader_library[_name] = shader_id;
@@ -132,7 +132,7 @@ std::shared_ptr<Shader> Shader::Library::AddProgram(const std::string& _name, ui
     if (!success) {
         glGetShaderInfoLog(program_id, 512, nullptr, log);
 
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED -> " << log << std::endl;
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED -> (" << _name << ") " << log << std::endl;
     }
 
     std::shared_ptr<Shader> compiled_shader = std::make_shared<Shader>(_vertexId, _fragmentId, program_id);

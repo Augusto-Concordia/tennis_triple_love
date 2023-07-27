@@ -38,12 +38,12 @@ void VisualLine::DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec
     if (_material != nullptr)
         current_material = _material;
 
-    shader->Use();
-    shader->SetModelMatrix(_transformMatrix);
-    shader->SetViewProjectionMatrix(_viewProjection);
+    current_material->shader->Use();
+    current_material->shader->SetModelMatrix(_transformMatrix);
+    current_material->shader->SetViewProjectionMatrix(_viewProjection);
 
-    shader->SetVec3("u_color", current_material->color.r, current_material->color.g, current_material->color.b);
-    shader->SetFloat("u_alpha", current_material->alpha);
+    current_material->shader->SetVec3("u_color", current_material->color.r, current_material->color.g, current_material->color.b);
+    current_material->shader->SetFloat("u_alpha", current_material->alpha);
 
     glLineWidth(current_material->line_thickness);
     glPointSize(current_material->point_size);
