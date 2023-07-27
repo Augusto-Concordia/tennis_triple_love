@@ -68,6 +68,7 @@ public:
 
     void DrawOneA(glm::mat4 world_transform_matrix);
     void DrawOneG(glm::mat4 world_transform_matrix);
+    void DrawOneJ(glm::mat4 world_transform_matrix);
 
     void ResizeCallback(GLFWwindow *_window, int _displayWidth, int _displayHeight);
     void InputCallback(GLFWwindow *_window, double _deltaTime);
