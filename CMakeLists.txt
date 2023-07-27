@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(tennis_double_love)
+project(tennis_triple_love)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -14,13 +14,13 @@ find_package(OpenGL REQUIRED)
 add_subdirectory(vendor)
 
 # add s_engine project and link glfw to it
-file(GLOB_RECURSE TENNIS_DOUBLE_LOVE_FILES source/**.cpp)
-add_executable(tennis_double_love ${TENNIS_DOUBLE_LOVE_FILES})
+file(GLOB_RECURSE TENNIS_TRIPLE_LOVE_FILES source/**.cpp)
+add_executable(tennis_triple_love ${TENNIS_TRIPLE_LOVE_FILES})
 
-target_include_directories(tennis_double_love PRIVATE source)
+target_include_directories(tennis_triple_love PRIVATE source)
 
 IF (WIN32)
-    target_link_libraries(tennis_double_love PRIVATE glfw OpenGL::GL glm glad -static-libgcc -static-libstdc++)
+    target_link_libraries(tennis_triple_love PRIVATE glfw OpenGL::GL glm glad -static-libgcc -static-libstdc++)
 ELSE()
-    target_link_libraries(tennis_double_love PRIVATE glfw OpenGL::GL glm glad)
+    target_link_libraries(tennis_triple_love PRIVATE glfw OpenGL::GL glm glad)
 ENDIF()
