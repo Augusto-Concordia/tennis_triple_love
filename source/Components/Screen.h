@@ -6,12 +6,12 @@
 #include <vector>
 #include "glm/vec3.hpp"
 #include "Components/Shader.h"
-#include "VisualObject.h"
+#include "Visual/VisualObject.h"
 
-class VisualScreen : public VisualObject
+class Screen : public VisualObject
 {
 public:
-    explicit VisualScreen(Shader::Material _material = Shader::Material());
+    explicit Screen(Shader::Material _material = Shader::Material());
 
     void Draw(const glm::mat4 &_viewProjection = glm::mat4(1.0f), const glm::vec3 &_cameraPosition = glm::vec3(0.0f), int _renderMode = GL_TRIANGLES, const Shader::Material *_material = nullptr) override;
     void DrawFromMatrix(const glm::mat4 &_viewProjection = glm::mat4(1.0f), const glm::vec3 &_cameraPosition = glm::vec3(0.0f), const glm::mat4 &_transformMatrix = glm::mat4(1.0f), int _renderMode = GL_TRIANGLES, const Shader::Material *_material = nullptr) override;
