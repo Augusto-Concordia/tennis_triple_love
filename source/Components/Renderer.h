@@ -7,9 +7,8 @@
 #include "Light.h"
 #include "GLFW/glfw3.h"
 #include "Visual/VisualGrid.h"
-#include "Components/Visual/VisualLine.h"
-#include "Components/Visual/VisualCube.h"
-#include "Components/Visual/VisualScreen.h"
+#include "Visual/VisualLine.h"
+#include "Visual/VisualCube.h"
 #include "Screen.h"
 
 class Renderer
