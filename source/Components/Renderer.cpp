@@ -229,14 +229,15 @@ void Renderer::Init() {
     // cleanup the texture bind
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    // disable color draw buffer
+    // disable color draw & read buffer for this framebuffer
+    glReadBuffer(GL_NONE);
     glDrawBuffer(GL_NONE);
 
     // checks if the framebuffer is complete
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cout << "ERROR -> Framebuffer is not complete!" << std::endl;
 
-    // unbinds the current framebuffer
+    // cleanup the framebuffer bind
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -251,7 +252,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
 
     // SHADOW MAP PASS
 
-    // binds the shadow map framebuffer to draw on it
+    // binds the shadow map framebuffer and the depth texture to draw on it
     glBindFramebuffer(GL_FRAMEBUFFER, shadow_map_fbo);
     glViewport(0, 0, Light::LIGHTMAP_SIZE, Light::LIGHTMAP_SIZE);
     glBindTexture(GL_TEXTURE_2D, shadow_map_depth_tex);
@@ -282,14 +283,14 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     // resets the viewport to the window size
     glViewport(0, 0, viewport_width, viewport_height);
 
-    // activates the shadow map depth texture & binds it to the second texture unit
+    // activates the shadow map depth texture & binds it to the second texture unit, so that it can be used
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, shadow_map_depth_tex);
 
     // clears the color & depth canvas to black
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //quick shadow catcher test
+    //quick shadow catcher test, this will be changed to a floor plane textured according to the requirements :)
     net_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), quick_floor_transform_matrix);
 
     // draws the world cube
@@ -315,6 +316,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     DrawOneGabrielleRacket(rackets[1].position, rackets[1].rotation, rackets[1].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
     DrawOneJackRacket(rackets[2].position, rackets[2].rotation, rackets[2].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
 
+    // can be used for post-processing effects
     //main_screen->Draw();
 }
 
