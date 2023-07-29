@@ -9,6 +9,7 @@
 #include "Visual/VisualGrid.h"
 #include "Components/Visual/VisualLine.h"
 #include "Components/Visual/VisualCube.h"
+#include "Components/Visual/VisualScreen.h"
 
 class Renderer
 {
@@ -23,8 +24,9 @@ private:
         Racket(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale) : position(_position), rotation(_rotation), scale(_scale) {}
     };
 
+    std::unique_ptr<VisualScreen> main_screen;
     std::shared_ptr<Camera> main_camera;
-    std::shared_ptr<Shader> default_shader;
+    std::unique_ptr<Shader::Material> shadow_mapper_material;
 
     std::unique_ptr<VisualGrid> main_grid;
 
@@ -33,6 +35,7 @@ private:
     std::unique_ptr<VisualLine> main_z_line;
 
     std::shared_ptr<Light> main_light;
+    std::unique_ptr<VisualCube> main_light_cube;
     std::unique_ptr<VisualCube> world_cube;
 
     std::vector<VisualCube> net_cubes;
@@ -52,23 +55,23 @@ private:
     int selected_player = 4;
 
     GLuint shadow_map_fbo = 0;
-    GLuint shadow_map_to = 0;
-    GLuint shadow_map_depth_bo = 0;
-    GLuint shadow_map_draw_buffers[1] = { GL_COLOR_ATTACHMENT0 };
+    GLuint shadow_map_color_tex = 0;
+    GLuint shadow_map_depth_tex = 0;
 
 public:
     Renderer(int _initialWidth, int _initialHeight);
 
+    void Init();
     void Render(GLFWwindow *_window, double _deltaTime);
 
-    void DrawOneNet(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale);
-    void DrawOneAugustoRacket(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale);
-    void DrawOneJackRacket(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale);
-    void DrawOneGabrielleRacket(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale);
+    void DrawOneNet(const glm::vec3 &_position, const glm::vec3 &_rotation, const glm::vec3 &_scale, const glm::mat4& _viewProjection, const glm::vec3& _eyePosition, const Shader::Material *_materialOverride = nullptr);
+    void DrawOneAugustoRacket(const glm::vec3 &_position, const glm::vec3 &_rotation, const glm::vec3 &_scale, const glm::mat4& _viewProjection,const glm::vec3& _eyePosition, const Shader::Material *_materialOverride = nullptr);
+    void DrawOneGabrielleRacket(const glm::vec3 &_position, const glm::vec3 &_rotation, const glm::vec3 &_scale, const glm::mat4& _viewProjection,const glm::vec3& _eyePosition, const Shader::Material *_materialOverride = nullptr);
+    void DrawOneJackRacket(const glm::vec3 &_position, const glm::vec3 &_rotation, const glm::vec3 &_scale, const glm::mat4& _viewProjection,const glm::vec3& _eyePosition, const Shader::Material *_materialOverride = nullptr);
 
-    void DrawOneA(glm::mat4 world_transform_matrix);
-    void DrawOneG(glm::mat4 world_transform_matrix);
-    void DrawOneJ(glm::mat4 world_transform_matrix);
+    void DrawOneA(glm::mat4 world_transform_matrix, const glm::mat4& _viewProjection,const glm::vec3& _eyePosition, const Shader::Material *_materialOverride = nullptr);
+    void DrawOneG(glm::mat4 world_transform_matrix, const glm::mat4& _viewProjection,const glm::vec3& _eyePosition, const Shader::Material *_materialOverride = nullptr);
+    void DrawOneJ(glm::mat4 world_transform_matrix, const glm::mat4& _viewProjection,const glm::vec3& _eyePosition, const Shader::Material *_materialOverride = nullptr);
 
     void ResizeCallback(GLFWwindow *_window, int _displayWidth, int _displayHeight);
     void InputCallback(GLFWwindow *_window, double _deltaTime);

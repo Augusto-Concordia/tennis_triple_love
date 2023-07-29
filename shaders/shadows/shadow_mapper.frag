@@ -2,15 +2,13 @@
 
 #version 330 core
 
-uniform vec3 u_light_pos; //main light position
-
-in vec3 FragPos;
+in vec4 gl_FragCoord;
 
 layout(location = 0) out vec4 out_color; //rgba color output
 
 //entrypoint
 void main() {
-    vec3 colorResult = vec3(length(u_light_pos - FragPos) / 10);
+    gl_FragDepth = gl_FragCoord.z;
 
-    out_color = vec4(colorResult, 1.0);
+    out_color = vec4(vec3(gl_FragCoord.z), 1.0f);
 }
