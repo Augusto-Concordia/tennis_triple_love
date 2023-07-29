@@ -4,7 +4,10 @@
 
 Renderer::Renderer(int _initialWidth, int _initialHeight)
 {
-    main_camera = std::make_unique<Camera>(glm::vec3(0.0f, 25.0f, 30.0f), glm::vec3(0.0f), _initialWidth, _initialHeight);
+    viewport_width = _initialWidth;
+    viewport_height = _initialHeight;
+
+    main_camera = std::make_unique<Camera>(glm::vec3(0.0f, 25.0f, 30.0f), glm::vec3(0.0f), viewport_width, viewport_height);
 
     main_light = std::make_unique<Light>(glm::vec3(0.0f, 13.0f, 0.0f), glm::vec3(0.99f, 0.95f, 0.78f), 0.2f, 0.4f);
 
@@ -213,7 +216,7 @@ void Renderer::Init() {
     // initializes the shadow map depth texture
     glGenTextures(1, &shadow_map_depth_tex);
     glBindTexture(GL_TEXTURE_2D, shadow_map_depth_tex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 2048, 2048, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, Light::LIGHTMAP_SIZE, Light::LIGHTMAP_SIZE, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -250,7 +253,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
 
     // binds the shadow map framebuffer to draw on it
     glBindFramebuffer(GL_FRAMEBUFFER, shadow_map_fbo);
-    glViewport(0, 0, 2048, 2048);
+    glViewport(0, 0, Light::LIGHTMAP_SIZE, Light::LIGHTMAP_SIZE);
     glBindTexture(GL_TEXTURE_2D, shadow_map_depth_tex);
 
     // clears the color & depth canvas to black
@@ -277,7 +280,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     // COLOR PASS
 
     // resets the viewport to the window size
-    glViewport(0, 0, 1024, 768);
+    glViewport(0, 0, viewport_width, viewport_height);
 
     // activates the shadow map depth texture & binds it to the second texture unit
     glActiveTexture(GL_TEXTURE0);
@@ -977,7 +980,10 @@ void Renderer::DrawOneJ(glm::mat4 world_transform_matrix, const glm::mat4& _view
 
 void Renderer::ResizeCallback(GLFWwindow *_window, int _displayWidth, int _displayHeight)
 {
-    main_camera->SetViewportSize((float)_displayWidth, (float)_displayHeight);
+    viewport_width = _displayWidth;
+    viewport_height = _displayHeight;
+
+    main_camera->SetViewportSize((float)viewport_width, (float)viewport_height);
 }
 
 void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)

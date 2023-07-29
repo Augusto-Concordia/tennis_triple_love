@@ -14,8 +14,6 @@ Light::Light(glm::vec3 _position, glm::vec3 _color, float _ambientStrength, floa
 void Light::SetPosition(const glm::vec3 &_position) {
     position = _position;
 
-    //SetTarget(position + light_forward * target_distance);
-
     UpdateView();
 }
 
@@ -46,5 +44,5 @@ void Light::UpdateView() {
 }
 
 void Light::UpdateProjection() {
-    projection_matrix = glm::perspective(glm::radians(Light::FOV), 2048.0f / 2048.0f, Light::NEAR_PLANE, Light::FAR_PLANE);
+    projection_matrix = glm::perspective(glm::radians(Light::FOV), (float)Light::LIGHTMAP_SIZE / (float)Light::LIGHTMAP_SIZE, Light::NEAR_PLANE, Light::FAR_PLANE);
 }

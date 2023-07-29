@@ -51,11 +51,12 @@ private:
     std::vector<Racket> rackets;
     std::vector<Racket> default_rackets;
 
+    int viewport_width, viewport_height;
+
     int racket_render_mode = GL_TRIANGLES;
     int selected_player = 4;
 
     GLuint shadow_map_fbo = 0;
-    GLuint shadow_map_color_tex = 0;
     GLuint shadow_map_depth_tex = 0;
 
 public:
