@@ -10,6 +10,7 @@
 #include "Components/Visual/VisualLine.h"
 #include "Components/Visual/VisualCube.h"
 #include "Components/Visual/VisualScreen.h"
+#include "Screen.h"
 
 class Renderer
 {
@@ -24,7 +25,7 @@ private:
         Racket(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale) : position(_position), rotation(_rotation), scale(_scale) {}
     };
 
-    std::unique_ptr<VisualScreen> main_screen;
+    std::unique_ptr<Screen> main_screen;
     std::shared_ptr<Camera> main_camera;
     std::unique_ptr<Shader::Material> shadow_mapper_material;
 

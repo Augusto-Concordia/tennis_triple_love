@@ -31,7 +31,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     Shader::Material screen_material = {
         .shader = screen_shader,
     };
-    main_screen = std::make_unique<VisualScreen>(screen_material);
+    main_screen = std::make_unique<Screen>(screen_material);
 
     // default material
     Shader::Material default_s_material = {
