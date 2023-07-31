@@ -15,6 +15,8 @@ public:
     inline constexpr static float NEAR_PLANE = 0.1f;
     inline constexpr static float FAR_PLANE = 400.0f;
 
+    bool project_shadows = true;
+
 private:
     glm::mat4 view_matrix = glm::mat4(1.0f);
     glm::mat4 projection_matrix = glm::mat4(1.0f);
@@ -35,6 +37,7 @@ public:
     void SetTarget(const glm::vec3& _target);
 
     [[nodiscard]] glm::vec3 GetPosition() const;
+    [[nodiscard]] glm::vec3 GetTarget() const;
     [[nodiscard]] glm::vec3 GetColor() const;
     [[nodiscard]] glm::mat4 GetViewProjection() const;
 

@@ -295,8 +295,10 @@ void VisualCube::DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec
     current_material->shader->SetFloat("u_specular_strength", current_material->main_light->specular_strength);
     current_material->shader->SetInt("u_shininess", current_material->shininess);
 
+    current_material->shader->SetFloat("u_shadows_enabled", 1.0f - (float)current_material->main_light->project_shadows);
     current_material->shader->SetMat4("u_light_view_projection", current_material->main_light->GetViewProjection());
     current_material->shader->SetTexture("u_depth_texture", 0);
+
 
     glLineWidth(current_material->line_thickness);
     glPointSize(current_material->point_size);

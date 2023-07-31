@@ -53,6 +53,7 @@ private:
 
     int viewport_width, viewport_height;
 
+    bool shadow_mode = true;
     int racket_render_mode = GL_TRIANGLES;
     int selected_player = 4;
 

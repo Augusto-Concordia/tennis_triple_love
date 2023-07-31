@@ -250,6 +250,10 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     auto light_turning_radius = 4.0f;
     main_light->SetPosition(glm::vec3(glm::cos(glfwGetTime() * 2.0f) * light_turning_radius, 10.0f * glm::sin(glfwGetTime() / 2.0f) + 10.0f, glm::sin(glfwGetTime()) *  light_turning_radius));
 
+    glm::mat4 quick_floor_transform_matrix = glm::mat4(1.0f);
+    quick_floor_transform_matrix = Transforms::RotateDegrees(quick_floor_transform_matrix, glm::vec3(180.0f, 0.0f, 0.0f));
+    quick_floor_transform_matrix = glm::scale(quick_floor_transform_matrix, glm::vec3(10.0f));
+
     // SHADOW MAP PASS
 
     // binds the shadow map framebuffer and the depth texture to draw on it
@@ -257,25 +261,24 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     glViewport(0, 0, Light::LIGHTMAP_SIZE, Light::LIGHTMAP_SIZE);
     glBindTexture(GL_TEXTURE_2D, shadow_map_depth_tex);
 
-    // clears the color & depth canvas to black
+    // clears the depth canvas to black
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    glm::mat4 quick_floor_transform_matrix = glm::mat4(1.0f);
-    quick_floor_transform_matrix = Transforms::RotateDegrees(quick_floor_transform_matrix, glm::vec3(180.0f, 0.0f, 0.0f));
-    quick_floor_transform_matrix = glm::scale(quick_floor_transform_matrix, glm::vec3(10.0f));
+    if (shadow_mode) {
+        //quick shadow catcher test
+        net_cubes[0].DrawFromMatrix(main_light->GetViewProjection(), main_light->GetPosition(), quick_floor_transform_matrix, GL_TRIANGLES, shadow_mapper_material.get());
 
-    //quick shadow catcher test
-    net_cubes[0].DrawFromMatrix(main_light->GetViewProjection(), main_light->GetPosition(), quick_floor_transform_matrix, GL_TRIANGLES, shadow_mapper_material.get());
+        // draws the net
+        DrawOneNet(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
 
-    // draws the net
-    DrawOneNet(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
+        // draws the rackets
+        DrawOneAugustoRacket(rackets[0].position, rackets[0].rotation, rackets[0].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
+        DrawOneGabrielleRacket(rackets[1].position, rackets[1].rotation, rackets[1].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
+        DrawOneJackRacket(rackets[2].position, rackets[2].rotation, rackets[2].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
+    }
 
-    // draws the rackets
-    DrawOneAugustoRacket(rackets[0].position, rackets[0].rotation, rackets[0].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
-    DrawOneGabrielleRacket(rackets[1].position, rackets[1].rotation, rackets[1].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
-    DrawOneJackRacket(rackets[2].position, rackets[2].rotation, rackets[2].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
-
-    // unbind the current framebuffer
+    // unbind the current texture & framebuffer
+    glBindTexture(GL_TEXTURE_2D, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // COLOR PASS
@@ -283,7 +286,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     // resets the viewport to the window size
     glViewport(0, 0, viewport_width, viewport_height);
 
-    // activates the shadow map depth texture & binds it to the second texture unit, so that it can be used
+    // activates the shadow map depth texture & binds it to the first texture unit, so that it can be used by the lit shader
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, shadow_map_depth_tex);
 
@@ -1032,6 +1035,14 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
     else if (Input::IsKeyPressed(_window, GLFW_KEY_T))
     {
         racket_render_mode = GL_TRIANGLES;
+    }
+
+    //shadows
+    if (Input::IsKeyReleased(_window, GLFW_KEY_B))
+    {
+        shadow_mode = !shadow_mode;
+
+        main_light->project_shadows = shadow_mode;
     }
 
     // model transforms

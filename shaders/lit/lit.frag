@@ -14,6 +14,8 @@ uniform int u_shininess; //light shininess
 uniform vec3 u_color; //cube color
 uniform float u_alpha; //cube opacity
 
+uniform float u_shadows_enabled = 1.0; //are shadows enabled?
+
 uniform sampler2D u_depth_texture; //light screen depth texture
 
 in vec3 FragPos;
@@ -21,7 +23,6 @@ in vec3 Normal;
 in vec4 FragPosLightSpace;
 
 layout(location = 0) out vec4 out_color; //rgba color output
-//layout(location = 1) out vec4 depth_color; //depth color output
 
 //entrypoint
 void main() {
@@ -55,11 +56,9 @@ void main() {
     // get current linear depth as stored in the depth buffer
     float currentDepth = projectedCoords.z;
 
-    float shadowScalar = (currentDepth - 0.003) < closestDepth ? 1.0 : 0.0;
+    float shadowScalar = (currentDepth - 0.003) < closestDepth ? 1.0 : u_shadows_enabled;
 
     vec3 colorResult = u_color * (ambient + (diffuse + specular) * shadowScalar * light_strength * 0.883 / (0.18 + 0.0 * lightDistance + 0.51 * lightDistance * lightDistance));
 
     out_color = vec4(colorResult, u_alpha);
-    gl_FragDepth = gl_FragCoord.z;
-    //depth_color = vec4(vec3(length(u_light_pos - FragPos)/100.0), 1.0);
 }

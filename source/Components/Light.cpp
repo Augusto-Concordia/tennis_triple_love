@@ -27,6 +27,10 @@ glm::vec3 Light::GetPosition() const {
     return position;
 }
 
+glm::vec3 Light::GetTarget() const {
+    return target;
+}
+
 glm::vec3 Light::GetColor() const {
     return color;
 }
