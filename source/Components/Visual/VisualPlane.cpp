@@ -7,10 +7,10 @@ VisualPlane::VisualPlane(Shader::Material _material) : VisualObject(glm::vec3(0.
 {
     // quad vertices with their uvs
     vertices = {
-        -1.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-        1.0f,  0.0f, 1.0f, 1.0f, 1.0f,
-        -1.0f,  0.0f, 1.0f, 0.0f, 1.0f,
+        -1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+        1.0f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+        -1.0f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
     };
 
     indices = {
@@ -18,7 +18,7 @@ VisualPlane::VisualPlane(Shader::Material _material) : VisualObject(glm::vec3(0.
         0, 2, 3
     };
 
-    VisualObject::SetupGlBuffersVerticesAndUvsOnly();
+    VisualObject::SetupGlBuffersVerticesNormalUv();
 }
 
 void VisualPlane::Draw(const glm::mat4 &_viewProjection, const glm::vec3 &_cameraPosition, int _renderMode, const Shader::Material *material)
