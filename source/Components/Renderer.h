@@ -10,6 +10,7 @@
 #include "Visual/VisualLine.h"
 #include "Visual/VisualCube.h"
 #include "Visual/VisualPlane.h"
+#include "Visual/VisualSphere.h"
 #include "Screen.h"
 
 
@@ -40,6 +41,8 @@ private:
     std::unique_ptr<VisualCube> main_light_cube;
     std::unique_ptr<VisualCube> world_cube;
     std::unique_ptr<VisualPlane> texture_cube;
+
+    std::unique_ptr<VisualSphere> tennis_ball;
 
     std::vector<VisualCube> net_cubes;
 

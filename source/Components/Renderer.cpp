@@ -89,6 +89,14 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
 
     texture_cube = std::make_unique<VisualPlane>(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(20.0f,0.0f,20.0f),  world_t_material);
 
+    Shader::Material world_tennisfuzz_material = {
+        .shader = lit_shader,
+        .texture = loadTexture("assets/fuzz.jpg"),
+        .main_light = main_light
+    };
+
+    tennis_ball = std::make_unique<VisualSphere>(1.0, 3, glm::vec3(0.0f,20.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,1.0f,1.0f),  world_tennisfuzz_material);
+
     // cube transform point offset (i.e. to scale it from the bottom-up)
     auto bottom_y_transform_offset = glm::vec3(0.0f, 0.5f, 0.0f);
 
@@ -332,6 +340,8 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     DrawOneGabrielleRacket(rackets[1].position, rackets[1].rotation, rackets[1].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
     DrawOneJackRacket(rackets[2].position, rackets[2].rotation, rackets[2].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
     texture_cube->Draw(main_camera->GetViewProjection(),  main_camera->GetPosition());
+
+    tennis_ball->Draw(main_camera->GetViewProjection(),  main_camera->GetPosition());
     // can be used for post-processing effects
     //main_screen->Draw();
 }
