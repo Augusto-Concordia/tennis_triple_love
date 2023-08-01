@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Utility/Input.hpp"
 #include "Utility/Transform.hpp"
+#include "stb_image.h"
 
 Renderer::Renderer(int _initialWidth, int _initialHeight)
 {

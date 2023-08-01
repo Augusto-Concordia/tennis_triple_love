@@ -34,5 +34,6 @@ public:
 protected:
     void SetupGlBuffersVerticesOnly();
     void SetupGlBuffersVerticesAndNormalsOnlyNoIndices();
+    void SetupGlBuffersVerticesNormalUv();
     void SetupGlBuffersVerticesAndUvsOnly();
 };

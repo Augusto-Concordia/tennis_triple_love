@@ -2,6 +2,13 @@ cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_CXX_STANDARD 20)
 
+#=================== STB_IMAGE ===================
+
+add_library(stb_image STATIC stb_image/include/stb_image.h)
+set_target_properties(stb_image PROPERTIES LINKER_LANGUAGE C)
+target_include_directories(stb_image PUBLIC stb_image/include)
+target_compile_definitions(stb_image PUBLIC STB_IMAGE_IMPLEMENTATION)
+
 #=================== GLM ===================
 
 # includes GLM source CMake project
