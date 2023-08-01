@@ -420,7 +420,7 @@ void Renderer::DrawOneAugustoRacket(const glm::vec3 &_position, const glm::vec3 
 
     // arm (skin)
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 5.0f, 0.0f));
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(-22.5f * sin(glfwGetTime()) - 22.5f, 0.0f, 0.0f));
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, rackets[0].upper_arm_rot);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 4.0f, 1.0f));
     augusto_racket_cube->DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, racket_render_mode, _materialOverride ==
                                                                                                                    nullptr ? &augusto_racket_materials[0] : _materialOverride);
@@ -599,7 +599,7 @@ void Renderer::DrawOneGabrielleRacket(const glm::vec3 &_position, const glm::vec
 
     // arm (skin)
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 5.0f, 0.0f));
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(-45.0f, 0.0f, 0.0f));
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, rackets[1].upper_arm_rot);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 4.0f, 1.0f));
     gabrielle_racket_cube.DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix,
                                          racket_render_mode, _materialOverride);
@@ -751,7 +751,7 @@ void Renderer::DrawOneJackRacket(const glm::vec3 &_position, const glm::vec3 &_r
 
     // arm (skin)
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 5.0f, 0.0f));
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(-45.0f, 0.0f, 0.0f));
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, rackets[2].upper_arm_rot);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 4.0f, 1.0f));
     jack_racket_cube.DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix,
                                     racket_render_mode, _materialOverride);
@@ -1079,8 +1079,8 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
         selected_player = 4;
     }
 
-    const int *desired_keys = new int[5]{GLFW_KEY_1, GLFW_KEY_2, GLFW_KEY_3, GLFW_KEY_4, GLFW_KEY_5};
-    if (Input::IsAnyKeyPressed(_window, 5, desired_keys))
+    const int *desired_keys = new int[3]{GLFW_KEY_1, GLFW_KEY_2, GLFW_KEY_3};
+    if (Input::IsAnyKeyPressed(_window, 3, desired_keys))
     {
         // sets focus on the selected player
         main_camera->SetPosition(rackets[selected_player].position + glm::vec3(0.0f, 25.0f, 30.0f));
@@ -1225,20 +1225,45 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
 
     // keyboard triggers
     // camera orbit
+    // move arms also
     if (Input::IsKeyPressed(_window, GLFW_KEY_UP))
     {
-        main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_UP, (float)_deltaTime);
+        if (Input::IsKeyPressed(_window, GLFW_KEY_RIGHT_SHIFT)) {
+            rackets[selected_player].upper_arm_rot = rackets[selected_player].upper_arm_rot + glm::vec3(1.0f, 0.0f, 0.0f);
+            if (rackets[selected_player].upper_arm_rot.x > 0.0f) { rackets[selected_player].upper_arm_rot.x = 0.0f; }
+        }
+        else {
+            main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_UP, (float)_deltaTime);
+        }
     }
     if (Input::IsKeyPressed(_window, GLFW_KEY_DOWN))
-    {
-        main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_DOWN, (float)_deltaTime);
+    {   
+        if (Input::IsKeyPressed(_window, GLFW_KEY_RIGHT_SHIFT)) {
+            rackets[selected_player].upper_arm_rot = rackets[selected_player].upper_arm_rot + glm::vec3(-1.0f, 0.0f, 0.0f);
+            if (rackets[selected_player].upper_arm_rot.x < -100.0f) { rackets[selected_player].upper_arm_rot.x = -100.0f; }
+        }
+        else {
+            main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_DOWN, (float)_deltaTime);
+        }
     }
     if (Input::IsKeyPressed(_window, GLFW_KEY_RIGHT))
-    {
-        main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_RIGHT, (float)_deltaTime);
+    {   
+        if (Input::IsKeyPressed(_window, GLFW_KEY_RIGHT_SHIFT)) {
+            rackets[selected_player].upper_arm_rot = rackets[selected_player].upper_arm_rot + glm::vec3(0.0f, 0.0f, 1.0f);
+            if (rackets[selected_player].upper_arm_rot.z > 20.0f) { rackets[selected_player].upper_arm_rot.z = 20.0f; }
+        }
+        else {
+            main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_RIGHT, (float)_deltaTime);
+        }
     }
     if (Input::IsKeyPressed(_window, GLFW_KEY_LEFT))
-    {
-        main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_LEFT, (float)_deltaTime);
+    {   
+        if (Input::IsKeyPressed(_window, GLFW_KEY_RIGHT_SHIFT)) {
+            rackets[selected_player].upper_arm_rot = rackets[selected_player].upper_arm_rot + glm::vec3(0.0f, 0.0f,- 1.0f);
+            if (rackets[selected_player].upper_arm_rot.z < -90.0f) { rackets[selected_player].upper_arm_rot.z = -90.0f; }
+        }
+        else {
+            main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_LEFT, (float)_deltaTime);
+        }
     }
 }
