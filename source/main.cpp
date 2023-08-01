@@ -61,6 +61,8 @@ int main() {
     int display_w, display_h, previous_display_w, previous_display_h;
     double previous_time = glfwGetTime();
 
+    main_renderer.Init(); //initializes renderer
+
     while (!glfwWindowShouldClose(window)) {
         //get current display window size & update rendering
         glfwGetFramebufferSize(window, &display_w, &display_h);

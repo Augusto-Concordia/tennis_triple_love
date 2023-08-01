@@ -34,6 +34,14 @@ void Shader::SetVec3(const char *_name, const glm::vec3& _value) const {
     glProgramUniform3f(program_id, glGetUniformLocation(program_id, _name), _value.x, _value.y, _value.z);
 }
 
+void Shader::SetTexture(const char *_name, GLint _value) const {
+    SetInt(_name, _value);
+}
+
+void Shader::SetMat4(const char *_name, const glm::mat4 &_value) const {
+    glProgramUniformMatrix4fv(program_id, glGetUniformLocation(program_id, _name), 1, GL_FALSE, glm::value_ptr(_value));
+}
+
 void Shader::SetModelMatrix(const glm::mat4 &_transform) const {
     glProgramUniformMatrix4fv(program_id, glGetUniformLocation(program_id, "u_model_transform"), 1, GL_FALSE, glm::value_ptr(_transform));
 }

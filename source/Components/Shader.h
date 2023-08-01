@@ -69,6 +69,9 @@ public:
     void SetVec3(const char *_name, float _valueX, float _valueY, float _valueZ) const;
     void SetVec3(const char *_name, const glm::vec3& _value) const;
 
+    void SetMat4(const char *_name, const glm::mat4 &_value) const; // utility function to set a matrix 4x4
+
+    void SetTexture(const char *_name, GLint _value) const; // utility function to set a texture
     void SetModelMatrix(const glm::mat4& _transform) const; // utility function to set model matrix
     void SetViewProjectionMatrix(const glm::mat4& _transform) const; // utility function to set projection matrix
 };

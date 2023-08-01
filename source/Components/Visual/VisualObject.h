@@ -32,6 +32,7 @@ public:
     virtual void DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec3 &_cameraPosition, const glm::mat4 &_transformMatrix, int _renderMode, const Shader::Material *_material) = 0;
 
 protected:
-    virtual void SetupGlBuffersVerticesOnly();
-    virtual void SetupGlBuffersVerticesAndNormalsOnlyNoIndices();
+    void SetupGlBuffersVerticesOnly();
+    void SetupGlBuffersVerticesAndNormalsOnlyNoIndices();
+    void SetupGlBuffersVerticesAndUvsOnly();
 };
