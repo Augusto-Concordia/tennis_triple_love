@@ -9,7 +9,9 @@
 #include "Visual/VisualGrid.h"
 #include "Visual/VisualLine.h"
 #include "Visual/VisualCube.h"
+#include "Visual/VisualPlane.h"
 #include "Screen.h"
+
 
 class Renderer
 {
@@ -37,6 +39,7 @@ private:
     std::shared_ptr<Light> main_light;
     std::unique_ptr<VisualCube> main_light_cube;
     std::unique_ptr<VisualCube> world_cube;
+    std::unique_ptr<VisualPlane> texture_cube;
 
     std::vector<VisualCube> net_cubes;
 

@@ -81,6 +81,14 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     };
     world_cube = std::make_unique<VisualCube>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(200.0f), glm::vec3(0.0f), world_s_material);
 
+    Shader::Material world_t_material = {
+        .shader = lit_shader,
+        .texture = loadTexture("assets/clay_texture.jpg"),
+        .main_light = main_light
+    };
+
+    texture_cube = std::make_unique<VisualPlane>(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(20.0f,0.0f,20.0f),  world_t_material);
+
     // cube transform point offset (i.e. to scale it from the bottom-up)
     auto bottom_y_transform_offset = glm::vec3(0.0f, 0.5f, 0.0f);
 
@@ -269,7 +277,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
 
     if (shadow_mode) {
         //quick shadow catcher test
-        net_cubes[0].DrawFromMatrix(main_light->GetViewProjection(), main_light->GetPosition(), quick_floor_transform_matrix, GL_TRIANGLES, shadow_mapper_material.get());
+        //net_cubes[0].DrawFromMatrix(main_light->GetViewProjection(), main_light->GetPosition(), quick_floor_transform_matrix, GL_TRIANGLES, shadow_mapper_material.get());
 
         // draws the net
         DrawOneNet(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
@@ -278,6 +286,8 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
         DrawOneAugustoRacket(rackets[0].position, rackets[0].rotation, rackets[0].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
         DrawOneGabrielleRacket(rackets[1].position, rackets[1].rotation, rackets[1].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
         DrawOneJackRacket(rackets[2].position, rackets[2].rotation, rackets[2].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
+    
+        texture_cube->Draw(main_light->GetViewProjection(),  main_light->GetPosition(), GL_TRIANGLES, shadow_mapper_material.get());
     }
 
     // unbind the current texture & framebuffer
@@ -297,7 +307,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //quick shadow catcher test, this will be changed to a floor plane textured according to the requirements :)
-    net_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), quick_floor_transform_matrix);
+    //net_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), quick_floor_transform_matrix);
 
     // draws the world cube
     world_cube->Draw(main_camera->GetViewProjection(), main_camera->GetPosition());
@@ -321,7 +331,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     DrawOneAugustoRacket(rackets[0].position, rackets[0].rotation, rackets[0].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
     DrawOneGabrielleRacket(rackets[1].position, rackets[1].rotation, rackets[1].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
     DrawOneJackRacket(rackets[2].position, rackets[2].rotation, rackets[2].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
-
+    texture_cube->Draw(main_camera->GetViewProjection(),  main_camera->GetPosition());
     // can be used for post-processing effects
     //main_screen->Draw();
 }
@@ -1018,7 +1028,7 @@ GLuint Renderer::loadTexture(const char *filename)
     return 0;
   }
 
-  // Step4 Upload the texture to the PU
+  // Step4 Upload the texture to the GPU
   GLenum format = 0;
   if (nrChannels == 1)
       format = GL_RED;

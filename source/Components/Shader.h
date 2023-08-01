@@ -47,6 +47,8 @@ public:
 
         std::shared_ptr<Light> main_light = std::make_shared<Light>();
 
+        GLuint texture = -1;
+
         int shininess = 32;
     };
 

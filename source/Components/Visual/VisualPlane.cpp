@@ -3,7 +3,7 @@
 #include <utility>
 #include "Utility/Transform.hpp"
 
-VisualPlane::VisualPlane(Shader::Material _material) : VisualObject(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), std::move(_material))
+VisualPlane::VisualPlane(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, Shader::Material _material) : VisualObject(_position, _rotation, _scale, std::move(_material))
 {
     // quad vertices with their uvs
     vertices = {
@@ -62,9 +62,17 @@ void VisualPlane::DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::ve
     current_material->shader->SetMat4("u_light_view_projection", current_material->main_light->GetViewProjection());
     current_material->shader->SetTexture("u_depth_texture", 0);
 
+
+    if(current_material->texture != -1){
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, current_material->texture);
+        current_material->shader->SetTexture("u_texture", 1);
+    }
+
     glLineWidth(current_material->line_thickness);
     glPointSize(current_material->point_size);
 
     // draw vertices according to their indices
     glDrawElements(_renderMode, indices.size(), GL_UNSIGNED_INT, nullptr);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
