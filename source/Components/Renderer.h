@@ -10,7 +10,6 @@
 #include "Visual/VisualLine.h"
 #include "Visual/VisualCube.h"
 #include "Screen.h"
-#include "include/stb_image.h"
 
 class Renderer
 {

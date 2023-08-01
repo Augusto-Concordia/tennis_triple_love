@@ -2,6 +2,8 @@
 #include "Utility/Input.hpp"
 #include "Utility/Transform.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "include/stb_image.h"
 
 Renderer::Renderer(int _initialWidth, int _initialHeight)
 {
