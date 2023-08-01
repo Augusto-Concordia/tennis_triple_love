@@ -11,7 +11,7 @@ public:
     float specular_strength = 0.5f;
 
     inline static int LIGHTMAP_SIZE = 2048;
-    inline constexpr static float FOV = 125.0f;
+    inline constexpr static float FOV = 90.0f;
     inline constexpr static float NEAR_PLANE = 0.1f;
     inline constexpr static float FAR_PLANE = 400.0f;
 

@@ -15,9 +15,10 @@ uniform vec3 u_color; //cube color
 uniform float u_alpha; //cube opacity
 
 uniform float u_shadows_enabled = 1.0; //are shadows enabled?
+uniform int u_textures_enabled = 1; //are shadows enabled?
 
 uniform sampler2D u_depth_texture; //light screen depth texture
-uniform sampler2D u_texture; 
+uniform sampler2D u_texture; //object texture
 
 in vec3 FragPos;
 in vec3 Normal;
@@ -60,7 +61,7 @@ void main() {
 
     float shadowScalar = (currentDepth - 0.003) < closestDepth ? 1.0 : u_shadows_enabled;
 
-    vec3 colorResult = vec3(mix(vec4(u_color, 1.0f), texture(u_texture, FragUv), 0.5)) * (ambient + (diffuse + specular) * shadowScalar * light_strength * 0.883 / (0.18 + 0.0 * lightDistance + 0.51 * lightDistance * lightDistance));
+    vec3 colorResult = vec3(mix(vec4(u_color, 1.0f), texture(u_texture, FragUv), 0.5 * u_textures_enabled)) * (ambient + (diffuse + specular) * shadowScalar * light_strength * 0.883 / (0.18 + 0.0 * lightDistance + 0.51 * lightDistance * lightDistance));
 
     out_color = vec4(colorResult, u_alpha);
 }

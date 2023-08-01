@@ -83,19 +83,21 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
 
     Shader::Material world_t_material = {
         .shader = lit_shader,
+        .main_light = main_light,
         .texture = loadTexture("assets/clay_texture.jpg"),
-        .main_light = main_light
+        .shininess = 1
     };
 
-    texture_cube = std::make_unique<VisualPlane>(glm::vec3(0.0f,0.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(20.0f,0.0f,20.0f),  world_t_material);
+    texture_cube = std::make_unique<VisualPlane>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(20.0f, 20.0f,20.0f),  world_t_material);
 
     Shader::Material world_tennisfuzz_material = {
         .shader = lit_shader,
+        .main_light = main_light,
         .texture = loadTexture("assets/fuzz.jpg"),
-        .main_light = main_light
+        .shininess = 1
     };
 
-    tennis_ball = std::make_unique<VisualSphere>(1.0, 3, glm::vec3(0.0f,20.0f,0.0f), glm::vec3(0.0f,0.0f,0.0f), glm::vec3(1.0f,1.0f,1.0f),  world_tennisfuzz_material);
+    tennis_ball = std::make_unique<VisualSphere>(1.0, 3, glm::vec3(0.0f,20.0f,0.0f), glm::vec3(0.0f), glm::vec3(1.0f),  world_tennisfuzz_material);
 
     // cube transform point offset (i.e. to scale it from the bottom-up)
     auto bottom_y_transform_offset = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -267,7 +269,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
 
     // moves the main light
     auto light_turning_radius = 4.0f;
-    main_light->SetPosition(glm::vec3(glm::cos(glfwGetTime() * 2.0f) * light_turning_radius, 10.0f * glm::sin(glfwGetTime() / 2.0f) + 10.0f, glm::sin(glfwGetTime()) *  light_turning_radius));
+    main_light->SetPosition(glm::vec3(glm::cos(glfwGetTime() * 2.0f) * light_turning_radius, 10.0f * glm::sin(glfwGetTime() / 2.0f) + 15.0f, glm::sin(glfwGetTime()) *  light_turning_radius));
 
     glm::mat4 quick_floor_transform_matrix = glm::mat4(1.0f);
     quick_floor_transform_matrix = Transforms::RotateDegrees(quick_floor_transform_matrix, glm::vec3(180.0f, 0.0f, 0.0f));
@@ -1054,7 +1056,6 @@ GLuint Renderer::loadTexture(const char *filename)
   glBindTexture(GL_TEXTURE_2D, 0);
   return textureId;
 }
-
 
 void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
 {
