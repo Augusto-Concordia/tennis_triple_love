@@ -10,6 +10,7 @@
 #include "Visual/VisualLine.h"
 #include "Visual/VisualCube.h"
 #include "Screen.h"
+#include "include/stb_image.h"
 
 class Renderer
 {
@@ -77,4 +78,6 @@ public:
 
     void ResizeCallback(GLFWwindow *_window, int _displayWidth, int _displayHeight);
     void InputCallback(GLFWwindow *_window, double _deltaTime);
+
+    GLuint loadTexture(const char *filename);
 };
