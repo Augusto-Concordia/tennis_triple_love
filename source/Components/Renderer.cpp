@@ -1117,6 +1117,8 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
         rackets[selected_player].position = default_rackets[selected_player].position;
         rackets[selected_player].rotation = default_rackets[selected_player].rotation;
         rackets[selected_player].scale = default_rackets[selected_player].scale;
+
+        rackets[selected_player].upper_arm_rot = glm::vec3(-45.0f, 0.0f, 0.0f);
     }
 
     if (Input::IsKeyPressed(_window, GLFW_KEY_W) && Input::IsKeyPressed(_window, GLFW_KEY_LEFT_SHIFT))
@@ -1283,10 +1285,5 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
         else {
             main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_LEFT, (float)_deltaTime);
         }
-    }
-    if (Input::IsKeyPressed(_window, GLFW_KEY_SPACE))
-    {   
-        rackets[selected_player].upper_arm_rot = glm::vec3(-45.0f, 0.0f, 0.0f);
-
     }
 }

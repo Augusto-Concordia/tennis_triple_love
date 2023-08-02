@@ -1,6 +1,12 @@
 # tennis_triple_love
 Assignment #2 - COMP 371
 
+## Authors
+
+Gabrielle Guidote - 40175182
+Jack Spiratos - 40210312
+Augusto Mota Pinheiro - 40208080
+
 ## Features
 * Many keybinds to control the camera and the model
 * Animated and fun-shaded tennis racket with ball
@@ -12,24 +18,23 @@ All depended upon libraries should already be included in the vendor folder.
 
 1. Generate project files with CMake
 2. Set the working directory to the root of the project
-3. Run the `tennis_love` project!
+3. Run the `tennis_triple_love` project!
 
 ### From the git repository
 Similar to the above instructions, with the key difference being to clone the repository with `--recurse-submodules` to include the depended upon libraries.
 
 1. Generate project files with CMake
 2. Set the working directory to the root of the project
-3. Run the `tennis_love` project!
+3. Run the `tennis_triple_love` project!
 
 ## Keybinds
-* `Home`: Resets the camera's position & rotation
-* `Tab`: Resets the model's position & rotation
-* `Space`: Randomizes model's position on the grid
+* `Home` & `Keypad 5`: Resets the camera's position & rotation
+* `Tab`: Resets the current model's position & rotation
 
 <br/>
 
-* `U`: Scale model up
-* `J`: Scale model down
+* `U`: Scale current model up
+* `J`: Scale current model down
 
 <br/>
 
@@ -47,6 +52,13 @@ _The following controls' direction were decided relative to the default camera's
 * `s`: Rotate model right (around the Y axis)
 * `a`: Rotate model clockwise (around the Z axis)
 * `d`: Rotate model counter-clockwise (around the Z axis)
+
+<br/>
+
+* `Up Arrow + Shift`: Rotate forward current model's upper arm 
+* `Down Arrow + Shift`: Rotate backward current model's upper arm
+* `Right Arrow + Shift`: Rotate outward current model's upper arm
+* `Left Arrow + Shift`: Rotate inward current model's upper arm
 
 <br/>
 
@@ -77,4 +89,8 @@ _The following changes the world orientation (orbits the camera)._
 * `L`: Renders the model as lines
 * `T`: Renders the model as filled triangles (i.e. polygons)
 
-## Progress
+<br/>
+
+* `X`: Toggles textures on/off
+* `B`: Toggles shadow mapping on/off
+* `Z`: Pauses light movement
