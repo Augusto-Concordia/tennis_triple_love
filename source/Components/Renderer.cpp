@@ -85,7 +85,8 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .shader = lit_shader,
         .main_light = main_light,
         .texture = loadTexture("assets/clay_texture.jpg"),
-        .shininess = 1
+        .shininess = 1,
+        .texture_enabled = false
     };
 
     texture_cube = std::make_unique<VisualPlane>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(20.0f, 20.0f,20.0f),  world_t_material);
@@ -96,7 +97,8 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .shader = lit_shader,
         .main_light = main_light,
         .texture = loadTexture("assets/fuzz.jpg"),
-        .shininess = 1
+        .shininess = 1,
+        .texture_enabled = false
     };
 
     tennis_balls[0] = VisualSphere(1.0, 3, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f),  world_tennisfuzz_material);
@@ -1231,6 +1233,17 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
     if (Input::IsKeyReleased(_window, GLFW_KEY_Z))
     {
         light_movement = !light_movement;
+    }
+
+        // camera rotation reset
+    if (Input::IsKeyReleased(_window, GLFW_KEY_X) )
+    {
+       texture_cube->material.texture_enabled = !texture_cube->material.texture_enabled ;
+
+       tennis_balls[0].material.texture_enabled = !tennis_balls[0].material.texture_enabled ;
+       tennis_balls[1].material.texture_enabled = !tennis_balls[1].material.texture_enabled ;
+       tennis_balls[2].material.texture_enabled = !tennis_balls[2].material.texture_enabled ;
+
     }
 
     // keyboard triggers

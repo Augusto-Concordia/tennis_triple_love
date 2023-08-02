@@ -1,5 +1,6 @@
 #include "VisualCube.h"
 
+
 #include <utility>
 #include "Utility/Transform.hpp"
 
@@ -302,7 +303,7 @@ void VisualCube::DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, current_material->texture);
 
-    current_material->shader->SetBool("u_textures_enabled", current_material->texture != -1);
+    current_material->shader->SetBool("u_textures_enabled", current_material->texture_enabled);
     current_material->shader->SetTexture("u_texture", 1);
 
     glLineWidth(current_material->line_thickness);

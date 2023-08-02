@@ -49,6 +49,8 @@ public:
 
         GLuint texture = -1;
 
+        bool texture_enabled = false;
+
         int shininess = 32;
     };
 

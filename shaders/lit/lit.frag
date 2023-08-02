@@ -15,7 +15,7 @@ uniform vec3 u_color; //cube color
 uniform float u_alpha; //cube opacity
 
 uniform float u_shadows_enabled = 1.0; //are shadows enabled?
-uniform int u_textures_enabled = 1; //are shadows enabled?
+uniform int u_textures_enabled; //are shadows enabled?
 
 uniform sampler2D u_depth_texture; //light screen depth texture
 uniform sampler2D u_texture; //object texture

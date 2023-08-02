@@ -9,8 +9,8 @@
 #include "Visual/VisualGrid.h"
 #include "Visual/VisualLine.h"
 #include "Visual/VisualCube.h"
-#include "Visual/VisualPlane.h"
 #include "Visual/VisualSphere.h"
+#include "Visual/VisualPlane.h"
 #include "Screen.h"
 
 
@@ -23,8 +23,7 @@ private:
         glm::vec3 rotation;
         glm::vec3 scale;
 
-        glm::vec3 lower_arm_rot =  glm::vec3(0.0f);
-        glm::vec3 upper_arm_rot =  glm::vec3(-45.0f, 0.0f, 0.0f);
+        glm::vec3 upper_arm_rot  = glm::vec3(-45.0f, 0.0f, 0.0f);
 
 
         Racket() = default;
@@ -90,4 +89,6 @@ public:
     void InputCallback(GLFWwindow *_window, double _deltaTime);
 
     GLuint loadTexture(const char *filename);
+
+    bool texture_mode = true;
 };
