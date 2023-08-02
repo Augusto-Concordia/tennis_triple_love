@@ -275,7 +275,8 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
 
     // moves the main light
     auto light_turning_radius = 4.0f;
-    main_light->SetPosition(glm::vec3(glm::cos(glfwGetTime() * 2.0f) * light_turning_radius, 10.0f * glm::sin(glfwGetTime() / 2.0f) + 15.0f, glm::sin(glfwGetTime()) *  light_turning_radius));
+    if (light_movement)
+        main_light->SetPosition(glm::vec3(glm::cos(glfwGetTime() * 2.0f) * light_turning_radius, 10.0f * glm::sin(glfwGetTime() / 2.0f) + 15.0f, glm::sin(glfwGetTime()) *  light_turning_radius));
 
     glm::mat4 quick_floor_transform_matrix = glm::mat4(1.0f);
     quick_floor_transform_matrix = Transforms::RotateDegrees(quick_floor_transform_matrix, glm::vec3(180.0f, 0.0f, 0.0f));
@@ -292,9 +293,6 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     glClear(GL_DEPTH_BUFFER_BIT);
 
     if (shadow_mode) {
-        //quick shadow catcher test
-        //net_cubes[0].DrawFromMatrix(main_light->GetViewProjection(), main_light->GetPosition(), quick_floor_transform_matrix, GL_TRIANGLES, shadow_mapper_material.get());
-
         // draws the net
         DrawOneNet(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
 
@@ -322,9 +320,6 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     // clears the color & depth canvas to black
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //quick shadow catcher test, this will be changed to a floor plane textured according to the requirements :)
-    //net_cubes[0].DrawFromMatrix(main_camera->GetViewProjection(), main_camera->GetPosition(), quick_floor_transform_matrix);
-
     // draws the world cube
     world_cube->Draw(main_camera->GetViewProjection(), main_camera->GetPosition());
 
@@ -347,8 +342,8 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     DrawOneAugustoRacket(rackets[0].position, rackets[0].rotation, rackets[0].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
     DrawOneGabrielleRacket(rackets[1].position, rackets[1].rotation, rackets[1].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
     DrawOneJackRacket(rackets[2].position, rackets[2].rotation, rackets[2].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
-    texture_cube->Draw(main_camera->GetViewProjection(),  main_camera->GetPosition());
 
+    texture_cube->Draw(main_camera->GetViewProjection(),  main_camera->GetPosition());
     // can be used for post-processing effects
     //main_screen->Draw();
 }
@@ -1242,6 +1237,12 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
     if (Input::IsKeyPressed(_window, GLFW_KEY_HOME) || Input::IsKeyPressed(_window, GLFW_KEY_KP_5))
     {
         main_camera->SetDefaultPositionAndTarget();
+    }
+
+    // pauses camera movement
+    if (Input::IsKeyReleased(_window, GLFW_KEY_Z))
+    {
+        light_movement = !light_movement;
     }
 
     // keyboard triggers
