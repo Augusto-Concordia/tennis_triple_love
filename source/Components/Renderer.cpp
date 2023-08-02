@@ -415,7 +415,7 @@ void Renderer::DrawOneAugustoRacket(const glm::vec3 &_position, const glm::vec3 
 
     // tennis ball
     glm::mat4 third_transform_matrix = world_transform_matrix;
-    third_transform_matrix = glm::translate(third_transform_matrix, glm::vec3(0.0f, 25.0f, 0.0f));
+    third_transform_matrix = glm::translate(third_transform_matrix, glm::vec3(2.0f, 15.0f, 2.0f));
     tennis_balls[0].DrawFromMatrix(_viewProjection, _eyePosition, third_transform_matrix, racket_render_mode, _materialOverride);
 
     // forearm (skin)
@@ -568,18 +568,6 @@ void Renderer::DrawOneAugustoRacket(const glm::vec3 &_position, const glm::vec3 
     augusto_racket_cube->DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, racket_render_mode, _materialOverride ==
                                                                                                                    nullptr ? &augusto_racket_materials[2] : _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(2.0f, 0.5f, 2.0f));
-
-    // ball
-    // transformed to be more or less in the center of the net
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(-full_v_translate.x / 2.0f, horizontal_bottom_scale.y / 2.0f, 0.0f));
-    // transformed to animate back and forth
-    world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, -1.5f, -25.0f * glm::pow(glm::cos(glfwGetTime()), 2) + 25.5f));
-
-    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3((float)glm::cos(glfwGetTime()) * 360.0f));
-    world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f));
-    augusto_racket_cube->DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, racket_render_mode, _materialOverride ==
-                                                                                                                   nullptr ? &augusto_racket_materials[3] : _materialOverride);
-    world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / glm::vec3(1.0f));
 }
 
 void Renderer::DrawOneGabrielleRacket(const glm::vec3 &_position, const glm::vec3 &_rotation, const glm::vec3 &_scale, const glm::mat4& _viewProjection,const glm::vec3& _eyePosition, const Shader::Material *_materialOverride)
@@ -596,7 +584,7 @@ void Renderer::DrawOneGabrielleRacket(const glm::vec3 &_position, const glm::vec
 
     // tennis ball
     glm::mat4 third_transform_matrix = world_transform_matrix;
-    third_transform_matrix = glm::translate(third_transform_matrix, glm::vec3(0.0f, 25.0f, 0.0f));
+    third_transform_matrix = glm::translate(third_transform_matrix, glm::vec3(2.0f, 15.0f, 2.0f));
     tennis_balls[1].DrawFromMatrix(_viewProjection, _eyePosition, third_transform_matrix, racket_render_mode, _materialOverride);
 
     // arm //
@@ -754,7 +742,7 @@ void Renderer::DrawOneJackRacket(const glm::vec3 &_position, const glm::vec3 &_r
 
     // tennis ball
     glm::mat4 third_transform_matrix = world_transform_matrix;
-    third_transform_matrix = glm::translate(third_transform_matrix, glm::vec3(0.0f, 25.0f, 0.0f));
+    third_transform_matrix = glm::translate(third_transform_matrix, glm::vec3(2.0f, 15.0f, 2.0f));
     tennis_balls[2].DrawFromMatrix(_viewProjection, _eyePosition, third_transform_matrix, racket_render_mode, _materialOverride);
 
     jack_racket_cube.material.color = glm::vec3(1.000f, 0.894f, 0.769f); // skin colour
