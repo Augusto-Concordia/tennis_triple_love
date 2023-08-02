@@ -90,6 +90,8 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
 
     texture_cube = std::make_unique<VisualPlane>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(20.0f, 20.0f,20.0f),  world_t_material);
 
+    tennis_balls = std::vector<VisualSphere>(3);
+    
     Shader::Material world_tennisfuzz_material = {
         .shader = lit_shader,
         .main_light = main_light,
@@ -97,7 +99,11 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .shininess = 1
     };
 
-    tennis_ball = std::make_unique<VisualSphere>(1.0, 3, glm::vec3(0.0f,20.0f,0.0f), glm::vec3(0.0f), glm::vec3(1.0f),  world_tennisfuzz_material);
+    tennis_balls[0] = VisualSphere(1.0, 3, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f),  world_tennisfuzz_material);
+
+    tennis_balls[1] = VisualSphere(1.0, 3, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f),  world_tennisfuzz_material);
+    
+    tennis_balls[2] = VisualSphere(1.0, 3, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f),  world_tennisfuzz_material);
 
     // cube transform point offset (i.e. to scale it from the bottom-up)
     auto bottom_y_transform_offset = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -343,7 +349,6 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     DrawOneJackRacket(rackets[2].position, rackets[2].rotation, rackets[2].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
     texture_cube->Draw(main_camera->GetViewProjection(),  main_camera->GetPosition());
 
-    tennis_ball->Draw(main_camera->GetViewProjection(),  main_camera->GetPosition());
     // can be used for post-processing effects
     //main_screen->Draw();
 }
@@ -412,6 +417,11 @@ void Renderer::DrawOneAugustoRacket(const glm::vec3 &_position, const glm::vec3 
 
     // letter A
     DrawOneA(world_transform_matrix, _viewProjection, _eyePosition, _materialOverride);
+
+    // tennis ball
+    glm::mat4 third_transform_matrix = world_transform_matrix;
+    third_transform_matrix = glm::translate(third_transform_matrix, glm::vec3(0.0f, 25.0f, 0.0f));
+    tennis_balls[0].DrawFromMatrix(_viewProjection, _eyePosition, third_transform_matrix, racket_render_mode, _materialOverride);
 
     // forearm (skin)
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(45.0f, 0.0f, 0.0f));
@@ -589,6 +599,11 @@ void Renderer::DrawOneGabrielleRacket(const glm::vec3 &_position, const glm::vec
     glm::mat4 secondary_transform_matrix = world_transform_matrix;
     DrawOneG(secondary_transform_matrix, _viewProjection, _eyePosition, _materialOverride);
 
+    // tennis ball
+    glm::mat4 third_transform_matrix = world_transform_matrix;
+    third_transform_matrix = glm::translate(third_transform_matrix, glm::vec3(0.0f, 25.0f, 0.0f));
+    tennis_balls[1].DrawFromMatrix(_viewProjection, _eyePosition, third_transform_matrix, racket_render_mode, _materialOverride);
+
     // arm //
     gabrielle_racket_cube.material.color = glm::vec3(0.871f, 0.722f, 0.529f); // skin colour
 
@@ -741,6 +756,11 @@ void Renderer::DrawOneJackRacket(const glm::vec3 &_position, const glm::vec3 &_r
     // draw letter J //
     glm::mat4 secondary_transform_matrix = world_transform_matrix;
     DrawOneJ(secondary_transform_matrix, _viewProjection, _eyePosition, _materialOverride);
+
+    // tennis ball
+    glm::mat4 third_transform_matrix = world_transform_matrix;
+    third_transform_matrix = glm::translate(third_transform_matrix, glm::vec3(0.0f, 25.0f, 0.0f));
+    tennis_balls[2].DrawFromMatrix(_viewProjection, _eyePosition, third_transform_matrix, racket_render_mode, _materialOverride);
 
     jack_racket_cube.material.color = glm::vec3(1.000f, 0.894f, 0.769f); // skin colour
 
@@ -1266,5 +1286,10 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
         else {
             main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_LEFT, (float)_deltaTime);
         }
+    }
+    if (Input::IsKeyPressed(_window, GLFW_KEY_SPACE))
+    {   
+        rackets[selected_player].upper_arm_rot = glm::vec3(-45.0f, 0.0f, 0.0f);
+
     }
 }

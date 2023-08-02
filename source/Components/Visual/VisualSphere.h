@@ -14,7 +14,7 @@ public:
     float radius;
     int subdivisions;
 
-    explicit VisualSphere(float radius, int subdivisions, glm::vec3 _position = glm::vec3(0.0f), glm::vec3 _rotation = glm::vec3(0.0f), glm::vec3 _scale = glm::vec3(1.0f), Shader::Material _material = Shader::Material());
+    explicit VisualSphere(float radius = 1.0f, int subdivisions = 1, glm::vec3 _position = glm::vec3(0.0f), glm::vec3 _rotation = glm::vec3(0.0f), glm::vec3 _scale = glm::vec3(1.0f), Shader::Material _material = Shader::Material());
 
     void subdivideTriangles();
 

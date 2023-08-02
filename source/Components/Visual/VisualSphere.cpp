@@ -244,6 +244,6 @@ void VisualSphere::DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::v
     glLineWidth(current_material->line_thickness);
     glPointSize(current_material->point_size);
 
-    glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr);
+    glDrawElements(_renderMode, indices.size(), GL_UNSIGNED_INT, nullptr);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
