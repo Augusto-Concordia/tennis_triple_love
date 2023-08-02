@@ -296,14 +296,14 @@ void VisualCube::DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec
     current_material->shader->SetFloat("u_specular_strength", current_material->main_light->specular_strength);
     current_material->shader->SetInt("u_shininess", current_material->shininess);
 
-    current_material->shader->SetFloat("u_shadows_enabled", 1.0f - (float)current_material->main_light->project_shadows);
+    current_material->shader->SetFloat("u_shadows_influence", 1.0f - (float)current_material->main_light->project_shadows);
     current_material->shader->SetMat4("u_light_view_projection", current_material->main_light->GetViewProjection());
     current_material->shader->SetTexture("u_depth_texture", 0);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, current_material->texture);
 
-    current_material->shader->SetBool("u_textures_enabled", current_material->texture_enabled);
+    current_material->shader->SetFloat("u_texture_influence", current_material->texture_influence);
     current_material->shader->SetTexture("u_texture", 1);
 
     glLineWidth(current_material->line_thickness);

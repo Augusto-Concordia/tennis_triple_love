@@ -84,28 +84,26 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     Shader::Material world_t_material = {
         .shader = lit_shader,
         .main_light = main_light,
-        .texture = loadTexture("assets/clay_texture.jpg"),
+        .texture = LoadTexture("assets/clay_texture.jpg"),
+        .texture_influence = 1.0f,
         .shininess = 1,
-        .texture_enabled = false
     };
 
-    texture_cube = std::make_unique<VisualPlane>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(20.0f, 20.0f,20.0f),  world_t_material);
+    ground_plane = std::make_unique<VisualPlane>(glm::vec3(0.0f, -0.1f, 0.0f), glm::vec3(0.0f), glm::vec3(42.0f, 20.0f, 20.0f), world_t_material);
 
     tennis_balls = std::vector<VisualSphere>(3);
     
     Shader::Material world_tennisfuzz_material = {
         .shader = lit_shader,
         .main_light = main_light,
-        .texture = loadTexture("assets/fuzz.jpg"),
+        .texture = LoadTexture("assets/fuzz.jpg"),
+        .texture_influence = 1.0f,
         .shininess = 1,
-        .texture_enabled = false
     };
 
-    tennis_balls[0] = VisualSphere(1.0, 3, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f),  world_tennisfuzz_material);
-
-    tennis_balls[1] = VisualSphere(1.0, 3, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f),  world_tennisfuzz_material);
-    
-    tennis_balls[2] = VisualSphere(1.0, 3, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f),  world_tennisfuzz_material);
+    tennis_balls[0] = VisualSphere(1.0, 3, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), world_tennisfuzz_material);
+    tennis_balls[1] = VisualSphere(1.0, 3, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), world_tennisfuzz_material);
+    tennis_balls[2] = VisualSphere(1.0, 3, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), world_tennisfuzz_material);
 
     // cube transform point offset (i.e. to scale it from the bottom-up)
     auto bottom_y_transform_offset = glm::vec3(0.0f, 0.5f, 0.0f);
@@ -280,10 +278,6 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     if (light_movement)
         main_light->SetPosition(glm::vec3(glm::cos(glfwGetTime() * 2.0f) * light_turning_radius, 10.0f * glm::sin(glfwGetTime() / 2.0f) + 15.0f, glm::sin(glfwGetTime()) *  light_turning_radius));
 
-    glm::mat4 quick_floor_transform_matrix = glm::mat4(1.0f);
-    quick_floor_transform_matrix = Transforms::RotateDegrees(quick_floor_transform_matrix, glm::vec3(180.0f, 0.0f, 0.0f));
-    quick_floor_transform_matrix = glm::scale(quick_floor_transform_matrix, glm::vec3(10.0f));
-
     // SHADOW MAP PASS
 
     // binds the shadow map framebuffer and the depth texture to draw on it
@@ -302,8 +296,8 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
         DrawOneAugustoRacket(rackets[0].position, rackets[0].rotation, rackets[0].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
         DrawOneGabrielleRacket(rackets[1].position, rackets[1].rotation, rackets[1].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
         DrawOneJackRacket(rackets[2].position, rackets[2].rotation, rackets[2].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
-    
-        texture_cube->Draw(main_light->GetViewProjection(),  main_light->GetPosition(), GL_TRIANGLES, shadow_mapper_material.get());
+
+        ground_plane->Draw(main_light->GetViewProjection(), main_light->GetPosition(), GL_TRIANGLES, shadow_mapper_material.get());
     }
 
     // unbind the current texture & framebuffer
@@ -345,7 +339,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     DrawOneGabrielleRacket(rackets[1].position, rackets[1].rotation, rackets[1].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
     DrawOneJackRacket(rackets[2].position, rackets[2].rotation, rackets[2].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
 
-    texture_cube->Draw(main_camera->GetViewProjection(),  main_camera->GetPosition());
+    ground_plane->Draw(main_camera->GetViewProjection(), main_camera->GetPosition());
     // can be used for post-processing effects
     //main_screen->Draw();
 }
@@ -1022,7 +1016,7 @@ void Renderer::ResizeCallback(GLFWwindow *_window, int _displayWidth, int _displ
 }
 
 
-GLuint Renderer::loadTexture(const char *filename)
+GLuint Renderer::LoadTexture(const char *filename)
 {
   // Step1 Create and bind textures
   GLuint textureId = 0;
@@ -1235,15 +1229,16 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
         light_movement = !light_movement;
     }
 
-        // camera rotation reset
-    if (Input::IsKeyReleased(_window, GLFW_KEY_X) )
+    // camera rotation reset
+    if (Input::IsKeyReleased(_window, GLFW_KEY_X))
     {
-       texture_cube->material.texture_enabled = !texture_cube->material.texture_enabled ;
+        texture_mode = !texture_mode;
 
-       tennis_balls[0].material.texture_enabled = !tennis_balls[0].material.texture_enabled ;
-       tennis_balls[1].material.texture_enabled = !tennis_balls[1].material.texture_enabled ;
-       tennis_balls[2].material.texture_enabled = !tennis_balls[2].material.texture_enabled ;
+        ground_plane->material.texture_influence = texture_mode ? 1.0f : 0.0f;
 
+        tennis_balls[0].material.texture_influence = texture_mode ? 1.0f : 0.0f;
+        tennis_balls[1].material.texture_influence = texture_mode ? 1.0f : 0.0f;
+        tennis_balls[2].material.texture_influence = texture_mode ? 1.0f : 0.0f;
     }
 
     // keyboard triggers

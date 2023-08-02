@@ -22,6 +22,10 @@ void Shader::SetFloat(const char *_name, float _value) const {
     glProgramUniform1f(program_id, glGetUniformLocation(program_id, _name), _value);
 }
 
+void Shader::SetFloatFast(const char *_name, float _value) const {
+    glUniform1f(glGetUniformLocation(program_id, _name), _value);
+}
+
 void Shader::SetVec2(const char *_name, float _valueX, float _valueY) const {
     glProgramUniform2f(program_id, glGetUniformLocation(program_id, _name), _valueX, _valueY);
 }

@@ -47,9 +47,8 @@ public:
 
         std::shared_ptr<Light> main_light = std::make_shared<Light>();
 
-        GLuint texture = -1;
-
-        bool texture_enabled = false;
+        GLuint texture = 0;
+        float texture_influence = 0.0f;
 
         int shininess = 32;
     };
@@ -66,7 +65,10 @@ public:
 
     void SetBool(const char* _name, bool _value) const; // utility function to set a bool value
     void SetInt(const char *_name, int _value) const;  // utility function to set a int _value
+
     void SetFloat(const char *_name, float _value) const; // utility function to set a float _value
+    void SetFloatFast(const char *_name, float _value) const; // utility function to set a flow value on an active program
+
     void SetVec2(const char *_name, float _valueX, float _valueY) const; // utility function to set a vector 2
 
     // utility functions to set a vector 3

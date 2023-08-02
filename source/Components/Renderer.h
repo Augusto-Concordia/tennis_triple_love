@@ -43,7 +43,7 @@ private:
     std::shared_ptr<Light> main_light;
     std::unique_ptr<VisualCube> main_light_cube;
     std::unique_ptr<VisualCube> world_cube;
-    std::unique_ptr<VisualPlane> texture_cube;
+    std::unique_ptr<VisualPlane> ground_plane;
 
     std::vector<VisualSphere> tennis_balls;
 
@@ -63,6 +63,7 @@ private:
     int viewport_width, viewport_height;
 
     bool shadow_mode = true;
+    bool texture_mode = true;
     bool light_movement = true;
     int racket_render_mode = GL_TRIANGLES;
     int selected_player = 4;
@@ -88,7 +89,5 @@ public:
     void ResizeCallback(GLFWwindow *_window, int _displayWidth, int _displayHeight);
     void InputCallback(GLFWwindow *_window, double _deltaTime);
 
-    GLuint loadTexture(const char *filename);
-
-    bool texture_mode = true;
+    inline static GLuint LoadTexture(const char *filename);
 };

@@ -14,8 +14,8 @@ uniform int u_shininess; //light shininess
 uniform vec3 u_color; //cube color
 uniform float u_alpha; //cube opacity
 
-uniform float u_shadows_enabled = 1.0; //are shadows enabled?
-uniform int u_textures_enabled; //are shadows enabled?
+uniform float u_shadows_influence = 1.0; //are shadows enabled?
+uniform float u_texture_influence = 0.5; //are textures enabled?
 
 uniform sampler2D u_depth_texture; //light screen depth texture
 uniform sampler2D u_texture; //object texture
@@ -59,9 +59,9 @@ void main() {
     // get current linear depth as stored in the depth buffer
     float currentDepth = projectedCoords.z;
 
-    float shadowScalar = (currentDepth - 0.003) < closestDepth ? 1.0 : u_shadows_enabled;
+    float shadowScalar = (currentDepth - 0.003) < closestDepth ? 1.0 : u_shadows_influence;
 
-    vec3 colorResult = vec3(mix(vec4(u_color, 1.0f), texture(u_texture, FragUv), 0.5 * u_textures_enabled)) * (ambient + (diffuse + specular) * shadowScalar * light_strength * 0.883 / (0.18 + 0.0 * lightDistance + 0.51 * lightDistance * lightDistance));
+    vec3 colorResult = vec3(mix(vec4(u_color, 1.0f), texture(u_texture, FragUv), u_texture_influence)) * (ambient + (diffuse + specular) * shadowScalar * light_strength * 0.883 / (0.18 + 0.0 * lightDistance + 0.51 * lightDistance * lightDistance));
 
     out_color = vec4(colorResult, u_alpha);
 }

@@ -107,8 +107,6 @@ void VisualObject::SetupGlBuffersVerticesNormalUv(){
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid *) (6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-
-
     //the following is in this specific order to avoid a dangling EBO
     //more info: https://learnopengl.com/code_viewer_gh.php?code=src/1.getting_started/2.2.hello_triangle_indexed/hello_triangle_indexed.cpp
 
