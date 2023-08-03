@@ -303,6 +303,9 @@ void VisualCube::DrawFromMatrix(const glm::mat4 &_viewProjection, const glm::vec
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, current_material->texture);
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
     current_material->shader->SetFloat("u_texture_influence", current_material->texture_influence);
     current_material->shader->SetTexture("u_texture", 1);
 
