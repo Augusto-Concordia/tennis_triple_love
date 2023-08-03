@@ -47,6 +47,7 @@ public:
 
         std::shared_ptr<Light> main_light = std::make_shared<Light>();
 
+        glm::vec2 tile = glm::vec2(1.0f);
         GLuint texture = 0;
         float texture_influence = 0.0f;
 

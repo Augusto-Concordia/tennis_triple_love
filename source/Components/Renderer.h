@@ -9,6 +9,7 @@
 #include "Visual/VisualGrid.h"
 #include "Visual/VisualLine.h"
 #include "Visual/VisualCube.h"
+#include "Visual/UnVisualCube.h"
 #include "Visual/VisualSphere.h"
 #include "Visual/VisualPlane.h"
 #include "Screen.h"
@@ -50,12 +51,14 @@ private:
     std::vector<VisualCube> net_cubes;
 
     std::vector<VisualCube> letter_cubes;
+    std::vector<UnVisualCube> letter_cubes_alpha;
 
     std::shared_ptr<VisualCube> augusto_racket_cube;
     std::vector<Shader::Material> augusto_racket_materials;
 
     VisualCube gabrielle_racket_cube;
     VisualCube jack_racket_cube;
+    VisualCube jack_arm_cube;
 
     std::vector<Racket> rackets;
     std::vector<Racket> default_rackets;

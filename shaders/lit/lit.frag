@@ -24,6 +24,7 @@ in vec3 FragPos;
 in vec3 Normal;
 in vec4 FragPosLightSpace;
 in vec2 FragUv;
+in vec4 FragAlpha;
 
 layout(location = 0) out vec4 out_color; //rgba color output
 
@@ -63,5 +64,5 @@ void main() {
 
     vec3 colorResult = vec3(mix(vec4(u_color, 1.0f), texture(u_texture, FragUv), u_texture_influence)) * (ambient + (diffuse + specular) * shadowScalar * light_strength * 0.883 / (0.18 + 0.0 * lightDistance + 0.51 * lightDistance * lightDistance));
 
-    out_color = vec4(colorResult, u_alpha);
+    out_color = vec4(colorResult, u_alpha * FragAlpha.w);
 }

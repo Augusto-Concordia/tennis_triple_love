@@ -75,11 +75,14 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     main_z_line = std::make_unique<VisualLine>(glm::vec3(0.01f), glm::vec3(0.01f, 0.01f, 5.01f), z_line_s_material);
 
     // world cube
-    Shader::Material world_s_material = {
+    Shader::Material world_sky_material = {
         .shader = unlit_shader,
         .color = glm::vec3(0.53f, 0.81f, 0.92f),
+        .texture = LoadTexture("assets/sky.jpg"),
+        .texture_influence = 1.0f,
+        .tile = glm::vec2(1.0f),
     };
-    world_cube = std::make_unique<VisualCube>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(200.0f), glm::vec3(0.0f), world_s_material);
+    world_cube = std::make_unique<VisualCube>(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(200.0f), glm::vec3(0.0f), world_sky_material);
 
     Shader::Material world_t_material = {
         .shader = lit_shader,
@@ -87,6 +90,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .texture = LoadTexture("assets/clay_texture.jpg"),
         .texture_influence = 1.0f,
         .shininess = 1,
+        .tile = glm::vec2(45.0f),
     };
 
     ground_plane = std::make_unique<VisualPlane>(glm::vec3(0.0f, -0.1f, 0.0f), glm::vec3(0.0f), glm::vec3(42.0f, 20.0f, 20.0f), world_t_material);
@@ -99,6 +103,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .texture = LoadTexture("assets/fuzz.jpg"),
         .texture_influence = 1.0f,
         .shininess = 1,
+        .tile = glm::vec2(10.0f),
     };
 
     tennis_balls[0] = VisualSphere(1.0, 3, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), world_tennisfuzz_material);
@@ -118,6 +123,7 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         .shininess = 1,
         .texture = LoadTexture("assets/metal.jpg"),
         .texture_influence = 1.0f,
+        .tile = glm::vec2(15.0f),
     };
     net_cubes[0] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, netpost_s_material); // net post
 
@@ -136,14 +142,17 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
         //.color = glm::vec3(0.1f, 0.6f, 0.6f),
         .main_light = main_light,
         .shininess = 1,
-        .texture = LoadTexture("assets/fuzz.jpg"),
+        .texture = LoadTexture("assets/fabric.jpg"),
         .texture_influence = 1.0f,
+        .tile = glm::vec2(5.0f),
     };
     net_cubes[2] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, net_s_material_2); // net
 
 
     // letters
-    letter_cubes = std::vector<VisualCube>(4);
+    letter_cubes = std::vector<VisualCube>(6);
+    // letters
+    letter_cubes_alpha = std::vector<UnVisualCube>(6);
 
     Shader::Material a_s_material = {
         .shader = lit_shader,
@@ -155,15 +164,52 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
 
     letter_cubes[1] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_material); // letter g
 
-    letter_cubes[2] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_material); // letter j
+    
 
     Shader::Material j_s_material = {
         .shader = lit_shader,
-        .color = glm::vec3(0.34f, 0.84f, 0.98f),
         .main_light = main_light,
-        .shininess = 128,
+        .shininess = 1,
+        .texture = LoadTexture("assets/brick.jpg"),
+        .texture_influence = 1.0f,
+        .tile = glm::vec2(5.0f),
     };
-    letter_cubes[2] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, j_s_material); // letter j
+    Shader::Material j_p_material = {
+        .shader = lit_shader,
+        .main_light = main_light,
+        .shininess = 1,
+        .texture = LoadTexture("assets/crack.jpg"),
+        .texture_influence = 1.0f,
+        .tile = glm::vec2(5.0f),
+    };
+    Shader::Material j_i_material = {
+        .shader = lit_shader,
+        .main_light = main_light,
+        .shininess = 1,
+        .texture = LoadTexture("assets/tile.jpg"),
+        .texture_influence = 1.0f,
+        .tile = glm::vec2(5.0f),
+    };
+    Shader::Material j_r_material = {
+        .shader = lit_shader,
+        .main_light = main_light,
+        .shininess = 1,
+        .texture = LoadTexture("assets/water.jpg"),
+        .texture_influence = 1.0f,
+        .tile = glm::vec2(5.0f),
+    };
+
+    letter_cubes[2] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, j_s_material); // letter s
+    letter_cubes[3] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, j_p_material); // letter p
+    letter_cubes[4] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, j_i_material); // letter i
+    letter_cubes[5] = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, j_r_material); // letter r
+
+    letter_cubes_alpha[0];
+    letter_cubes_alpha[1];
+    letter_cubes_alpha[2] = UnVisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, j_s_material); // letter s
+    letter_cubes_alpha[3] = UnVisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, j_p_material); // letter p
+    letter_cubes_alpha[4] = UnVisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, j_i_material); // letter i
+    letter_cubes_alpha[5] = UnVisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, j_r_material); // letter r
 
     const auto racket_line_thickness = 2.0f;
     const auto racket_point_size = 3.0f;
@@ -239,7 +285,17 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     ////
 
     // jack racket cube
+
+    Shader::Material arms_material = {
+        .shader = lit_shader,
+        .main_light = main_light,
+        .shininess = 1,
+        .texture = LoadTexture("assets/tats2.jpg"),
+        .texture_influence = 1.0f,
+        .tile = glm::vec2(4.0f),
+    };
     jack_racket_cube = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, default_s_material);
+    jack_arm_cube = VisualCube(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), bottom_y_transform_offset, arms_material);
     rackets[2] = default_rackets[2] = Racket(
         glm::vec3(-10.0f, 0.0f, 0.0f),
         glm::vec3(0.0f),
@@ -289,9 +345,9 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     InputCallback(_window, _deltaTime);
 
     // moves the main light
-    // auto light_turning_radius = 4.0f;
-    // if (light_movement)
-    //     main_light->SetPosition(glm::vec3(glm::cos(glfwGetTime() * 2.0f) * light_turning_radius, 10.0f * glm::sin(glfwGetTime() / 2.0f) + 15.0f, glm::sin(glfwGetTime()) *  light_turning_radius));
+    auto light_turning_radius = 4.0f;
+    if (light_movement)
+        main_light->SetPosition(glm::vec3(glm::cos(glfwGetTime() * 2.0f) * light_turning_radius, 10.0f * glm::sin(glfwGetTime() / 2.0f) + 15.0f, glm::sin(glfwGetTime()) *  light_turning_radius));
 
     // SHADOW MAP PASS
 
@@ -311,8 +367,8 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
         //DrawOneAugustoRacket(rackets[0].position, rackets[0].rotation, rackets[0].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
         //DrawOneGabrielleRacket(rackets[1].position, rackets[1].rotation, rackets[1].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
         //DrawOneJackRacket(rackets[2].position, rackets[2].rotation, rackets[2].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
-        DrawOneJackRacket(rackets[0].position, rackets[0].rotation, rackets[0].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
-        DrawOneJackRacket2(rackets[1].position, rackets[1].rotation, rackets[1].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
+        DrawOneJackRacket(rackets[0].position, rackets[0].rotation, rackets[0].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
+        DrawOneJackRacket2(rackets[1].position, rackets[1].rotation, rackets[1].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
 
 
 
@@ -821,21 +877,21 @@ void Renderer::DrawOneJackRacket(const glm::vec3 &_position, const glm::vec3 &_r
     third_transform_matrix = glm::translate(third_transform_matrix, glm::vec3(2.0f, 15.0f, 2.0f));
     tennis_balls[2].DrawFromMatrix(_viewProjection, _eyePosition, third_transform_matrix, racket_render_mode, _materialOverride);
 
-    jack_racket_cube.material.color = glm::vec3(1.000f, 0.894f, 0.769f); // skin colour
+    jack_arm_cube.material.color = glm::vec3(1.000f, 1.0f, 1.0f); // skin colour
 
     // forearm (skin)
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(45.0f, 0.0f, 0.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 5.0f, 1.0f));
-    jack_racket_cube.DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix,
-                                    racket_render_mode, _materialOverride);
+    jack_arm_cube.DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix,
+                                    GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 0.2f, 1.0f));
 
     // arm (skin)
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 5.0f, 0.0f));
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, rackets[2].upper_arm_rot);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 4.0f, 1.0f));
-    jack_racket_cube.DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix,
-                                    racket_render_mode, _materialOverride);
+    jack_arm_cube.DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix,
+                                    GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 0.25f, 1.0f));
 
     // racket //
@@ -942,21 +998,21 @@ void Renderer::DrawOneJackRacket2(const glm::vec3 &_position, const glm::vec3 &_
     third_transform_matrix = glm::translate(third_transform_matrix, glm::vec3(2.0f, 15.0f, 2.0f));
     tennis_balls[2].DrawFromMatrix(_viewProjection, _eyePosition, third_transform_matrix, racket_render_mode, _materialOverride);
 
-    jack_racket_cube.material.color = glm::vec3(1.000f, 0.894f, 0.769f); // skin colour
+    //jack_arm_cube.material.color = glm::vec3(1.000f, 0.894f, 0.769f); // skin colour
 
     // forearm (skin)
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, glm::vec3(45.0f, 0.0f, 0.0f));
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 5.0f, 1.0f));
-    jack_racket_cube.DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix,
-                                    racket_render_mode, _materialOverride);
+    jack_arm_cube.DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix,
+                                    GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 0.2f, 1.0f));
 
     // arm (skin)
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 5.0f, 0.0f));
     world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, rackets[2].upper_arm_rot);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 4.0f, 1.0f));
-    jack_racket_cube.DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix,
-                                    racket_render_mode, _materialOverride);
+    jack_arm_cube.DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix,
+                                    GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, glm::vec3(1.0f, 0.25f, 1.0f));
 
     // racket //
@@ -1220,7 +1276,7 @@ void Renderer::DrawOneJ(glm::mat4 world_transform_matrix, const glm::mat4& _view
 void Renderer::DrawOneS(glm::mat4 world_transform_matrix, const glm::mat4& _viewProjection,const glm::vec3& _eyePosition, const Shader::Material *_materialOverride)
 {
     auto scale_factor = glm::vec3(0.75f, 0.75f, 0.75f);               // scale for one cube
-    letter_cubes[2].material.color = glm::vec3(1.0f, 0.714f, 0.757f); // white net colour
+    letter_cubes_alpha[2].material.color = glm::vec3(1.0f, 0.714f, 0.757f); // white net colour
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 23.0f, -1.0f)); // go up and center
 
@@ -1229,57 +1285,57 @@ void Renderer::DrawOneS(glm::mat4 world_transform_matrix, const glm::mat4& _view
     // hence same scaling and jump of position
 
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 0.75f)); // 1 block to the left
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -1.50f)); // 2 block to the right
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 0.75f)); // 1 block to the left
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 0.75f)); // 1 block to the left
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -0.75f)); // 1 block to the right
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -0.75f)); // 1 block to the right
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
 
@@ -1291,7 +1347,7 @@ void Renderer::DrawOneS(glm::mat4 world_transform_matrix, const glm::mat4& _view
 void Renderer::DrawOneP(glm::mat4 world_transform_matrix, const glm::mat4& _viewProjection,const glm::vec3& _eyePosition, const Shader::Material *_materialOverride)
 {
     auto scale_factor = glm::vec3(0.75f, 0.75f, 0.75f);               // scale for one cube
-    letter_cubes[2].material.color = glm::vec3(1.0f, 0.714f, 0.757f); // white net colour
+    letter_cubes_alpha[3].material.color = glm::vec3(1.0f, 0.714f, 0.757f); // white net colour
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 23.0f, -5.0f)); // go up and center
 
@@ -1300,52 +1356,52 @@ void Renderer::DrawOneP(glm::mat4 world_transform_matrix, const glm::mat4& _view
     // hence same scaling and jump of position
 
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[3].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[3].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[3].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[3].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[3].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -0.75f)); // 1 block to the right
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[3].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -0.75f)); // 1 block to the right
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[3].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, -0.75f, 0.0f)); // 1 block down
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[3].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, -0.75f, 0.0f)); // 1 block down
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[3].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 0.75f)); // 1 block to the left
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[3].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
 
@@ -1356,7 +1412,7 @@ void Renderer::DrawOneP(glm::mat4 world_transform_matrix, const glm::mat4& _view
 void Renderer::DrawOneI(glm::mat4 world_transform_matrix, const glm::mat4& _viewProjection,const glm::vec3& _eyePosition, const Shader::Material *_materialOverride)
 {
     auto scale_factor = glm::vec3(0.75f, 0.75f, 0.75f);               // scale for one cube
-    letter_cubes[2].material.color = glm::vec3(1.0f, 0.714f, 0.757f); // white net colour
+    letter_cubes_alpha[4].material.color = glm::vec3(1.0f, 0.714f, 0.757f); // white net colour
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 23.0f, -5.0f)); // go up and center
 
@@ -1365,51 +1421,49 @@ void Renderer::DrawOneI(glm::mat4 world_transform_matrix, const glm::mat4& _view
     // hence same scaling and jump of position
 
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[4].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -0.75f)); // 1 block to the left
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[4].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 1.50f)); // 2 block to the right
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[4].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, -0.75f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[4].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[4].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[4].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[4].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -0.75f)); // 1 block to the left
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[4].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 1.50f)); // 2 block to the right
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[4].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
-
-
 
 
 }
@@ -1417,7 +1471,7 @@ void Renderer::DrawOneI(glm::mat4 world_transform_matrix, const glm::mat4& _view
 void Renderer::DrawOneR(glm::mat4 world_transform_matrix, const glm::mat4& _viewProjection,const glm::vec3& _eyePosition, const Shader::Material *_materialOverride)
 {
     auto scale_factor = glm::vec3(0.75f, 0.75f, 0.75f);               // scale for one cube
-    letter_cubes[2].material.color = glm::vec3(1.0f, 0.714f, 0.757f); // white net colour
+    letter_cubes_alpha[5].material.color = glm::vec3(1.0f, 0.714f, 0.757f); // white net colour
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 23.0f, -1.0f)); // go up and center
 
@@ -1426,76 +1480,73 @@ void Renderer::DrawOneR(glm::mat4 world_transform_matrix, const glm::mat4& _view
     // hence same scaling and jump of position
 
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.75f, 0.0f)); // 1 block up
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 0.75f)); // 1 block to the right
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 0.75f)); // 1 block to the right
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
-
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, 0.75f)); // 1 block to the right
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, -0.75f, 0.0f)); // 1 block down
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, -0.75f, 0.0f)); // 1 block down
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -0.75f)); // 1 block to the left
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, 0.0f, -0.75f)); // 1 block to the left
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, -0.75f, 0.75f)); // 1 block to the left
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
 
     world_transform_matrix = glm::translate(world_transform_matrix, glm::vec3(0.0f, -0.75f, 0.75f)); // 1 block to the left
     world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
-    letter_cubes[2].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+    letter_cubes_alpha[5].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
     world_transform_matrix = glm::scale(world_transform_matrix, 1.0f / scale_factor);
-
-
 
 
 }
