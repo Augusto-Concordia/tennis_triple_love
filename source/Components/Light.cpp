@@ -23,6 +23,12 @@ void Light::SetTarget(const glm::vec3 &_target) {
     UpdateView();
 }
 
+void Light::SetColor(const glm::vec3 &_color) {
+    color = _color;
+
+    UpdateView();
+}
+
 glm::vec3 Light::GetPosition() const {
     return position;
 }

@@ -24,7 +24,7 @@ private:
     glm::vec3 target = glm::vec3(0.0f);
     glm::vec3 color = glm::vec3(1.0f);
 
-    glm::vec3 position = glm::vec3(0.0f);
+    glm::vec3 position = glm::vec3(0.0f,0.0f,0.0f);
     glm::vec3 direction = glm::vec3(0.0f);
     float cutOff;
 
@@ -40,6 +40,7 @@ public:
 
     void SetPosition(const glm::vec3& _position);
     void SetTarget(const glm::vec3& _target);
+    void SetColor(const glm::vec3 &_color); 
 
     [[nodiscard]] glm::vec3 GetPosition() const;
     [[nodiscard]] glm::vec3 GetTarget() const;

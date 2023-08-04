@@ -13,6 +13,7 @@
 #include "Visual/VisualSphere.h"
 #include "Visual/VisualPlane.h"
 #include "Screen.h"
+#include <unistd.h>
 
 
 class Renderer
@@ -33,6 +34,12 @@ private:
 
     std::unique_ptr<Screen> main_screen;
     std::shared_ptr<Camera> main_camera;
+    std::shared_ptr<Camera> p1_camera;
+    std::shared_ptr<Camera> p2_camera;
+    std::shared_ptr<Camera> save_camera;
+    std::shared_ptr<Camera> save_camera_p1;
+    std::shared_ptr<Camera> save_camera_p2;
+    std::shared_ptr<Camera> float_camera;
     std::unique_ptr<Shader::Material> shadow_mapper_material;
 
     std::unique_ptr<VisualGrid> main_grid;
@@ -42,7 +49,9 @@ private:
     std::unique_ptr<VisualLine> main_z_line;
 
     std::shared_ptr<Light> main_light;
+    std::shared_ptr<Light> main_light_2;
     std::unique_ptr<VisualCube> main_light_cube;
+    std::unique_ptr<VisualCube> main_light_cube_2;
     std::unique_ptr<VisualCube> world_cube;
     std::unique_ptr<VisualPlane> ground_plane;
 
@@ -71,6 +80,10 @@ private:
     int racket_render_mode = GL_TRIANGLES;
     int selected_player = 4;
 
+    bool on_off = true;
+    int mode = 1;
+    float rotateFloat = 0.0f;
+
     GLuint shadow_map_fbo = 0;
     GLuint shadow_map_depth_tex = 0;
 
@@ -97,6 +110,8 @@ public:
 
     void ResizeCallback(GLFWwindow *_window, int _displayWidth, int _displayHeight);
     void InputCallback(GLFWwindow *_window, double _deltaTime);
+
+     void DrawOneCamera(const glm::vec3 &_position, const glm::vec3 &_rotation, const glm::vec3 &_scale, const glm::mat4& _viewProjection, const glm::vec3& _eyePosition, const Shader::Material *_materialOverride = nullptr);
 
     inline static GLuint LoadTexture(const char *filename);
 };

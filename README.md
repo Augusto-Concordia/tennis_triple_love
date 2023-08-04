@@ -1,11 +1,16 @@
 # tennis_triple_love
-Assignment #2 - COMP 371
+quiz #2 - COMP 371
 
 ## Authors
 
-Gabrielle Guidote - 40175182
+
 Jack Spiratos - 40210312
+
+
+part of the code belongs to my team members since the team assignment was created 
+while working together and is used as my framework for the quiz 
 Augusto Mota Pinheiro - 40208080
+Gabrielle Guidote - 40175182
 
 ## Features
 * Many keybinds to control the camera and the model
@@ -65,8 +70,8 @@ _The following controls' direction were decided relative to the default camera's
 _The following changes the world orientation (orbits the camera)._
 * `Up Arrow`: Orbit up
 * `Right Arrow`: Orbit right
-* `Down Arrow`: Orbit down
-* `Left Arrow`: Orbit left
+* `Down Arrow`: Orbit down, if using floating camera, will move it 
+* `Left Arrow`: Orbit left, if using floating camera, will move it 
 
 <br/>
 
@@ -86,7 +91,7 @@ _The following changes the world orientation (orbits the camera)._
 <br/>
 
 * `P`: Renders the model as points
-* `L`: Renders the model as lines
+* `L`: Renders the model as lines - replaced with lights now does have this function anymore
 * `T`: Renders the model as filled triangles (i.e. polygons)
 
 <br/>
@@ -94,3 +99,11 @@ _The following changes the world orientation (orbits the camera)._
 * `X`: Toggles textures on/off
 * `B`: Toggles shadow mapping on/off
 * `Z`: Pauses light movement
+* `L`: toggle lights
+* `R`: Toggles goes back to main camera 
+* `M`: Toggles camera
+* `H`: Toggles camera Floating in the air 
+
+
+
+

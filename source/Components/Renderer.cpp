@@ -10,9 +10,15 @@ Renderer::Renderer(int _initialWidth, int _initialHeight)
     viewport_width = _initialWidth;
     viewport_height = _initialHeight;
 
-    main_camera = std::make_unique<Camera>(glm::vec3(0.0f, 25.0f, 30.0f), glm::vec3(0.0f), viewport_width, viewport_height);
 
-    main_light = std::make_unique<Light>(glm::vec3(0.0f, 13.0f, 0.0f), glm::vec3(0.99f, 0.95f, 0.78f), 0.2f, 0.4f);
+    main_camera = std::make_unique<Camera>(glm::vec3(0.0f, 25.0f, 30.0f), glm::vec3(0.0f), viewport_width, viewport_height);
+    p1_camera = std::make_unique<Camera>(glm::vec3(10.0f, 10.0f, 0.0f), glm::vec3(0.0f), viewport_width, viewport_height);
+    p2_camera = std::make_unique<Camera>(glm::vec3(-10.0f, 10.0f, 3.0f), glm::vec3(0.0f), viewport_width, viewport_height);
+    save_camera = main_camera;
+
+    float_camera = std::make_unique<Camera>(glm::vec3(0.0f, 25.0f, -30.0f), glm::vec3(0.0f), viewport_width, viewport_height);
+
+    main_light = std::make_unique<Light>(glm::vec3(30.0f, 13.0f, 0.0f), glm::vec3(0.99f, 0.95f, 0.78f), 0.2f, 0.4f);
 
     auto grid_shader = Shader::Library::CreateShader("shaders/grid/grid.vert", "shaders/grid/grid.frag");
     auto unlit_shader = Shader::Library::CreateShader("shaders/unlit/unlit.vert", "shaders/unlit/unlit.frag");
@@ -345,9 +351,9 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     InputCallback(_window, _deltaTime);
 
     // moves the main light
-    auto light_turning_radius = 4.0f;
-    if (light_movement)
-        main_light->SetPosition(glm::vec3(glm::cos(glfwGetTime() * 2.0f) * light_turning_radius, 10.0f * glm::sin(glfwGetTime() / 2.0f) + 15.0f, glm::sin(glfwGetTime()) *  light_turning_radius));
+    // auto light_turning_radius = 4.0f;
+    // if (light_movement)
+    //     main_light->SetPosition(glm::vec3(glm::cos(glfwGetTime() * 2.0f) * light_turning_radius, 10.0f * glm::sin(glfwGetTime() / 2.0f) + 15.0f, glm::sin(glfwGetTime()) *  light_turning_radius));
 
     // SHADOW MAP PASS
 
@@ -370,6 +376,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
         DrawOneJackRacket(rackets[0].position, rackets[0].rotation, rackets[0].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
         DrawOneJackRacket2(rackets[1].position, rackets[1].rotation, rackets[1].scale, main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
 
+        DrawOneCamera(glm::vec3(0.0f, 25.0f, -30.0f), glm::vec3(0.0f, rotateFloat , 0.0f), glm::vec3(1.0f), main_light->GetViewProjection(), main_light->GetPosition(), shadow_mapper_material.get());
 
 
         ground_plane->Draw(main_light->GetViewProjection(), main_light->GetPosition(), GL_TRIANGLES, shadow_mapper_material.get());
@@ -408,6 +415,7 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
 
     // draws the net
     DrawOneNet(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f), main_camera->GetViewProjection(), main_camera->GetPosition());
+    DrawOneCamera(glm::vec3(0.0f, 25.0f, -30.0f), glm::vec3(0.0f, rotateFloat , 0.0f), glm::vec3(1.0f), main_camera->GetViewProjection(), main_camera->GetPosition());
 
     // draws the rackets
     //DrawOneAugustoRacket(rackets[0].position, rackets[0].rotation, rackets[0].scale, main_camera->GetViewProjection(), main_camera->GetPosition());
@@ -419,6 +427,20 @@ void Renderer::Render(GLFWwindow *_window, const double _deltaTime)
     // can be used for post-processing effects
     //main_screen->Draw();
 }
+ void Renderer::DrawOneCamera(const glm::vec3 &_position, const glm::vec3 &_rotation, const glm::vec3 &_scale, const glm::mat4& _viewProjection, const glm::vec3& _eyePosition, const Shader::Material *_materialOverride){
+    
+    auto scale_factor = glm::vec3(0.75f, 0.75f, 0.75f);               // scale for one cube
+    glm::mat4 world_transform_matrix = glm::mat4(1.0f);
+    // global transforms
+    world_transform_matrix = Transforms::RotateDegrees(world_transform_matrix, _rotation/25.0f);
+    world_transform_matrix = glm::translate(world_transform_matrix, _position);
+    world_transform_matrix = glm::scale(world_transform_matrix, scale_factor);
+
+    letter_cubes[1].material.color = glm::vec3(1.0f, 0.714f, 0.757f); // white net colour
+    letter_cubes[1].DrawFromMatrix(_viewProjection, _eyePosition, world_transform_matrix, GL_TRIANGLES, _materialOverride);
+
+ }
+
 
 void Renderer::DrawOneNet(const glm::vec3 &_position, const glm::vec3 &_rotation, const glm::vec3 &_scale, const glm::mat4& _viewProjection, const glm::vec3& _eyePosition, const Shader::Material *_materialOverride)
 {
@@ -1626,12 +1648,47 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
         selected_player = 4;
     }
 
-    const int *desired_keys = new int[3]{GLFW_KEY_1, GLFW_KEY_2, GLFW_KEY_3};
-    if (Input::IsAnyKeyPressed(_window, 3, desired_keys))
-    {
-        // sets focus on the selected player
-        main_camera->SetPosition(rackets[selected_player].position + glm::vec3(0.0f, 25.0f, 30.0f));
-        main_camera->SetTarget(rackets[selected_player].position);
+    // const int *desired_keys = new int[3]{GLFW_KEY_1, GLFW_KEY_2, GLFW_KEY_3};
+    // if (Input::IsAnyKeyPressed(_window, 3, desired_keys))
+    // {
+    //     // sets focus on the selected player
+    //     main_camera->SetPosition(rackets[selected_player].position + glm::vec3(0.0f, 25.0f, 30.0f));
+    //     main_camera->SetTarget(rackets[selected_player].position);
+    // }
+
+    if (Input::IsKeyPressed(_window, GLFW_KEY_M))
+    {   
+        //enter p1 mode
+        if(mode == 1){
+            save_camera = main_camera;
+            mode = 2;
+            main_camera = p1_camera;
+            usleep(200000);
+
+        }
+        //enter p2 mode
+        else if(mode == 2){
+            p1_camera = main_camera;
+            mode = 3;
+            main_camera = p2_camera;
+            usleep(200000);
+            
+        }
+        //return to main
+        else{
+            p2_camera = main_camera;
+            mode = 1;
+            main_camera = save_camera;
+            usleep(200000);
+            
+        }
+    }
+
+    if (Input::IsKeyPressed(_window, GLFW_KEY_R))
+    {   
+            mode = 1;
+            main_camera = save_camera;
+            
     }
 
     // keyboard triggers
@@ -1642,7 +1699,7 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
     }
     else if (Input::IsKeyPressed(_window, GLFW_KEY_L))
     {
-        racket_render_mode = GL_LINE_LOOP;
+        //racket_render_mode = GL_LINE_LOOP;
     }
     else if (Input::IsKeyPressed(_window, GLFW_KEY_T))
     {
@@ -1696,19 +1753,59 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
     }
     if (Input::IsKeyPressed(_window, GLFW_KEY_W))
     {
-        rackets[selected_player].rotation += glm::vec3(0.0f, 0.0f, 20.0f) * (float)_deltaTime;
+        
+        if(selected_player == 1 && mode == 2){
+            rackets[selected_player].rotation += glm::vec3(0.0f, 0.0f, 30.0f) * (float)_deltaTime;
+            main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_UP, (float)_deltaTime);
+            }
+        
+        else if(selected_player == 0 && mode == 3){
+            rackets[selected_player].rotation += glm::vec3(0.0f, 0.0f, 30.0f) * (float)_deltaTime;
+                main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_UP, (float)_deltaTime);
+            }
     }
+    
     if (Input::IsKeyPressed(_window, GLFW_KEY_S))
     {
-        rackets[selected_player].rotation += glm::vec3(0.0f, 0.0f, -20.0f) * (float)_deltaTime;
+
+        if(selected_player == 1 && mode == 2){
+            rackets[selected_player].rotation += glm::vec3(0.0f, 0.0f, -30.0f) * (float)_deltaTime;
+            main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_DOWN, (float)_deltaTime);
+            }
+        
+        else if(selected_player == 0 && mode == 3){
+            rackets[selected_player].rotation += glm::vec3(0.0f, 0.0f, -30.0f) * (float)_deltaTime;
+                main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_DOWN, (float)_deltaTime);
+            }
+
     }
     if (Input::IsKeyPressed(_window, GLFW_KEY_A))
     {
-        rackets[selected_player].rotation += glm::vec3(0.0f, 20.0f, 0.0f) * (float)_deltaTime;
+
+        if(selected_player == 1 && mode == 2){
+            rackets[selected_player].rotation += glm::vec3(0.0f, 30.0f, 0.0f) * (float)_deltaTime;
+            main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_LEFT, (float)_deltaTime);
+            }
+        
+        else if(selected_player == 0 && mode == 3){
+            rackets[selected_player].rotation += glm::vec3(0.0f, 30.0f, 0.0f) * (float)_deltaTime;
+                main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_LEFT, (float)_deltaTime);
+            }
+
     }
     if (Input::IsKeyPressed(_window, GLFW_KEY_D))
     {
-        rackets[selected_player].rotation += glm::vec3(0.0f, -20.0f, 0.0f) * (float)_deltaTime;
+
+        if(selected_player == 1 && mode == 2){
+            rackets[selected_player].rotation += glm::vec3(0.0f, -30.0f, 0.0f) * (float)_deltaTime;
+            main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_RIGHT, (float)_deltaTime);
+            }
+        
+        else if(selected_player == 0 && mode == 3){
+            rackets[selected_player].rotation += glm::vec3(0.0f, -30.0f, 0.0f) * (float)_deltaTime;
+                main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_RIGHT, (float)_deltaTime);
+            }
+
     }
 
     // scale
@@ -1778,6 +1875,23 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
         light_movement = !light_movement;
     }
 
+
+    // pauses camera movement
+    if (Input::IsKeyReleased(_window, GLFW_KEY_H))
+    {
+        if(mode != 4){
+            mode = 4;
+            main_camera = float_camera;
+        }else
+        {
+            mode = 1;//go back to main camera
+            main_camera = save_camera;
+        
+        }
+    }
+
+
+
     // camera rotation reset
     if (Input::IsKeyReleased(_window, GLFW_KEY_X))
     {
@@ -1791,6 +1905,19 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
     }
 
     // keyboard triggers
+    if (Input::IsKeyPressed(_window, GLFW_KEY_L))
+    {   
+        if(on_off){
+            on_off = false;
+            main_light->SetColor(glm::vec3(0.5f));
+        }
+        else{
+            on_off = true;
+            main_light->SetColor(glm::vec3(0.99f, 0.95f, 0.78f));
+        }
+
+
+    }
     // camera orbit
     // move arms also
     if (Input::IsKeyPressed(_window, GLFW_KEY_UP))
@@ -1819,6 +1946,10 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
             rackets[selected_player].upper_arm_rot = rackets[selected_player].upper_arm_rot + glm::vec3(0.0f, 0.0f, 1.0f);
             if (rackets[selected_player].upper_arm_rot.z > 20.0f) { rackets[selected_player].upper_arm_rot.z = 20.0f; }
         }
+        else if (mode == 4) {
+            rotateFloat -= 3.0f;
+            main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_RIGHT, (float)_deltaTime);
+        }
         else {
             main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_RIGHT, (float)_deltaTime);
         }
@@ -1828,6 +1959,10 @@ void Renderer::InputCallback(GLFWwindow *_window, const double _deltaTime)
         if (Input::IsKeyPressed(_window, GLFW_KEY_RIGHT_SHIFT)) {
             rackets[selected_player].upper_arm_rot = rackets[selected_player].upper_arm_rot + glm::vec3(0.0f, 0.0f,- 1.0f);
             if (rackets[selected_player].upper_arm_rot.z < -90.0f) { rackets[selected_player].upper_arm_rot.z = -90.0f; }
+        }
+        else if (mode == 4) {
+            rotateFloat += 3.0f;
+            main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_LEFT, (float)_deltaTime);
         }
         else {
             main_camera->OneAxisOrbit(Camera::Orbitation::ORBIT_LEFT, (float)_deltaTime);
