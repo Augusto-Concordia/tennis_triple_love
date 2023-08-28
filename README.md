@@ -3,9 +3,9 @@ Assignment #2 - COMP 371
 
 ## Authors
 
-Gabrielle Guidote - 40175182
-Jack Spiratos - 40210312
-Augusto Mota Pinheiro - 40208080
+- Gabrielle Guidote - 40175182
+- Jack Spiratos - 40210312
+- Augusto Mota Pinheiro - 40208080
 
 ## Features
 * Many keybinds to control the camera and the model
