@@ -1,3 +1,6 @@
+![1693239220_tennis_triple_love](https://github.com/Augusto-Concordia/tennis_triple_love/assets/33916325/4f805789-f6f2-49a0-ad27-92ab4023ffb6)
+
+
 # tennis_triple_love
 Assignment #2 - COMP 371
 
